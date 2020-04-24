@@ -1,0 +1,11 @@
+resolver: lts-15.9
+packages:
+- .
+extra-deps:
+  - discord-haskell-1.5.0@sha256:eabc14a9f6b0f2ba82034c0fe80e8504a816c915fb99e83e7b71c3a878e7692d,3798
+  - emoji-0.1.0.2@sha256:d995572a5c7dcd28f98eb15c6e387a7b3bda1ac2477ab0d9dba8580d5d7b161f
+allow-newer: true
+ghc-options:
+  other: -Wall -Werror
+# extra-include-dirs: [/path/to/dir]
+# extra-lib-dirs: [/path/to/dir]

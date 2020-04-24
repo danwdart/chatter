@@ -1,0 +1,13 @@
+# These are phrases that utter automatically when prefixed by a slash (/). Regexps supported.
+phrases:
+    asl: I'm a 28 year old guy from England.
+    hi: Hello, I'm a 28 year old guy from England.
+    intro: I code - and it's also my job.
+# These are phrases that will automatically disconnect if uttered by the other party. Regexps supported.
+bannedPhrases:
+    hey u want to see something
+    hey u wanna see something
+# These are phrases that utter automatically when asked. Regexps supported.
+autoPhrases:
+    asl: I'm a 28 year old guy from England.
+    Type\s+the\s+word\s+"(.*)": $1
