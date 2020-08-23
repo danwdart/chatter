@@ -1,7 +1,6 @@
 {-# LANGUAGE DataKinds                  #-}
 {-# LANGUAGE DeriveAnyClass             #-}
 {-# LANGUAGE DeriveGeneric              #-}
-{-# LANGUAGE GeneralisedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase                 #-}
 {-# LANGUAGE OverloadedStrings          #-}
 
@@ -58,15 +57,15 @@ loginQuery :: IO (Option 'Http)
 loginQuery = do
     rand <- randid
     likesList <- likes
-    return $ "rcs" =: ("1" :: String) <>
-        "firstevents" =: ("1" :: String) <>
+    return $ "rcs" =: ("1" :: Text) <>
+        "firstevents" =: ("1" :: Text) <>
         queryFlag "spid" <>
         "randid" =: rand <>
-        "topics" =: (LBS.unpack . encode $ likesList :: String) <>
-        "lang" =: ("en" :: String)
+        "topics" =: (LBS.unpack . encode $ likesList :: Text) <>
+        "lang" =: ("en" :: Text)
 
-type EventType = String
-type MessageBody = String
+type EventType = Text
+type MessageBody = Text
 
 newtype Message = Message {
     msgs :: [MessageBody]
@@ -75,7 +74,7 @@ newtype Message = Message {
 instance FromJSON Message where
     parseJSON = genericParseJSON defaultOptions { unwrapUnaryRecords = True }
 
-type CommonLike = String
+type CommonLike = Text
 
 -- MessageEvent | LikesEvent etc?
 data Event = Event {
@@ -89,8 +88,9 @@ instance FromJSON Event where
             [String a] -> return $ Event (T.unpack a) $ Message []
             [String a, String b] -> return $ Event (T.unpack a) $ Message [T.unpack b]
             [String a, Array b] -> case V.toList b of
-                [String c, String d] -> return $ Event (T.unpack a) $ Message [T.unpack c, T.unpack d]
-                [String e] -> return $ Event (T.unpack a) $ Message [T.unpack e]
+                Array a -> return $ case a of
+                    [String c, String d] -> return $ Event (T.unpack a) $ Message [T.unpack c, T.unpack d]
+                    [String e] -> return $ Event (T.unpack a) $ Message [T.unpack e]
                 xs -> error $ "Subarray is wrong" ++ show xs
             [String a, String b, String c] -> error $ show $ [a, b, c] <&> T.unpack
             (String a:xs) -> if a == "statusInfo" then
@@ -100,7 +100,7 @@ instance FromJSON Event where
         _ -> error "Not array"
 
 data LoginResponse = LoginResponse {
-    clientID :: String,
+    clientID :: Text,
     events   :: [Event]
 } deriving (Eq, FromJSON, Generic, Show)
 
@@ -127,16 +127,16 @@ login = do
 connected :: IO ()
 connected = putStrLn "Connected."
 
-commonLikes :: [String] -> IO ()
+commonLikes :: [Text] -> IO ()
 commonLikes likes = putStrLn $ "Common likes: " ++ intercalate ", " likes
 
-gotMessage :: String -> IO ()
+gotMessage :: Text -> IO ()
 gotMessage = putStrLn . ("Stranger: " ++)
 
-parseEvents :: String -> [Event] -> IO ()
+parseEvents :: Text -> [Event] -> IO ()
 parseEvents = mapM_ . parseEvent
 
-parseEvent :: String -> Event -> IO ()
+parseEvent :: Text -> Event -> IO ()
 parseEvent clientId event = case eventName event of
     "waiting" -> putStrLn "Waiting..."
     "connected" -> connected
@@ -152,20 +152,20 @@ parseEvent clientId event = case eventName event of
     "error" ->
         putStrLn $ ("Error: " ++) . head . msgs . eventBody $ event
 
-doEvents :: String -> IO ()
+doEvents :: Text -> IO ()
 doEvents clientId = do
     reqEvents <- runReq defaultHttpConfig $ req POST (endpoint /: "events") (ReqBodyUrlEnc ("id" =: clientId)) jsonResponse headers
     let body = responseBody reqEvents :: [Event]
     parseEvents clientId body
     doEvents clientId
 
-disconnect :: String -> IO ()
+disconnect :: Text -> IO ()
 disconnect clientId = do
     putStrLn "Disconnecting..."
     runReq defaultHttpConfig $ req POST (endpoint /: "disconnect") (ReqBodyUrlEnc ("id" =: clientId)) ignoreResponse headers
     exitSuccess
 
-send :: String -> String -> IO ()
+send :: Text -> Text -> IO ()
 send clientId messageText = do
     reqSend <- runReq defaultHttpConfig $ req POST (endpoint /: "send") (ReqBodyUrlEnc ("id" =: clientId <> "msg" =: messageText)) ignoreResponse headers
     putStrLn $ "You: " ++ messageText
