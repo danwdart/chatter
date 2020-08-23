@@ -1,23 +1,24 @@
-{-# LANGUAGE LambdaCase, OverloadedStrings #-}
+{-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wall -Werror -Wno-type-defaults -Wno-unused-imports #-}
 
-import Control.Exception
-import Control.Monad
-import Control.Monad.IO.Class
-import Control.Monad.State
-import Control.Monad.Trans.Except
-import Data.Either
-import Data.Text (Text)
-import qualified Data.Text as T
-import Discord
-import qualified Discord.Requests as R
-import Discord.Types hiding (channelId)
-import Lib.Prelude
-import Prelude hiding (putStrLn, print)
-import System.Environment
-import System.Exit
-import System.IO.Error
-import System.Process
+import           Control.Exception
+import           Control.Monad
+import           Control.Monad.IO.Class
+import           Control.Monad.State
+import           Control.Monad.Trans.Except
+import           Data.Either
+import           Data.Text                  (Text)
+import qualified Data.Text                  as T
+import           Discord
+import qualified Discord.Requests           as R
+import           Discord.Types              hiding (channelId)
+import           Lib.Prelude
+import           Prelude                    hiding (print, putStrLn)
+import           System.Environment
+import           System.Exit
+import           System.IO.Error
+import           System.Process
 
 -- guildId :: GuildId
 -- guildId = 507557271191158784
