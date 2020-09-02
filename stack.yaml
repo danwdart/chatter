@@ -1,4 +1,4 @@
-resolver: ghc-8.10.1
+resolver: ghc-8.10.2
 packages:
 - .
 extra-deps:
