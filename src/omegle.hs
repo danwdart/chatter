@@ -2,37 +2,62 @@
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedLists   #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Main where
 
-import           Control.Concurrent.Async
-import           Control.Exception
-import           Control.Monad
-import           Control.Monad.IO.Class
-import           Data.Aeson
+import           Control.Concurrent.Async   (concurrently_)
+import           Control.Exception          (SomeException (SomeException),
+                                             catch)
+import           Control.Monad              (forever, replicateM)
+import           Control.Monad.Random       (Random (randomRIO))
+import           Data.Aeson                 (FromJSON (parseJSON),
+                                             Options (unwrapUnaryRecords),
+                                             Value (Array, String),
+                                             defaultOptions, encode,
+                                             genericParseJSON)
 import qualified Data.ByteString.Char8      as BS
-import qualified Data.ByteString.Lazy.Char8 as LBS
-import           Data.Function
-import           Data.Functor
-import           Data.List
-import           Data.Maybe
+import           Data.ByteString.Lazy.Char8 (toStrict)
+import           Data.Functor.Compose
+import           Data.List                  (intercalate)
 import           Data.Text                  (Text)
 import qualified Data.Text                  as T
+import           Data.Text.Encoding         (decodeUtf8)
 import qualified Data.Vector                as V
-import           Debug.Trace
-import           GHC.Generics
-import           Network.HTTP.Req
-import           Safe                       (headMay)
-import           System.Environment
-import           System.Exit
-import           System.Posix.Signals
-import           System.Random
+import           GHC.Generics               (Generic)
+import           Lib.Prelude
+import           Network.HTTP.Req           (NoReqBody (NoReqBody), Option,
+                                             POST (POST),
+                                             ReqBodyUrlEnc (ReqBodyUrlEnc),
+                                             Scheme (Http), Url,
+                                             defaultHttpConfig, header, http,
+                                             ignoreResponse, jsonResponse,
+                                             queryFlag, req, responseBody,
+                                             runReq, (/:), (=:))
+import           Prelude                    hiding (getLine, print, putStrLn)
+import           System.Exit                (exitSuccess)
+import           System.Posix.Signals       (Handler (Catch), installHandler,
+                                             keyboardTermination)
 
-(<<&>>) :: (Functor f1, Functor f2) => f1 (f2 a) -> (a -> b) -> f1 (f2 b)
-(<<&>>) = flip $ (<$>) . (<$>)
+type ClientId = Text
+type EventType = Text
+type Like = Text
+type Message = Text
 
--- Let's do omegle with pure stdin/stdout
+data Event a = Event {
+    eventType :: EventType,
+    eventBody :: a
+} deriving (Eq, FromJSON, Generic, Show)
+
+data LoginResponse a = LoginResponse {
+    clientID :: ClientId,
+    events   :: [Event a]
+} deriving (Eq, FromJSON, Generic, Show)
+
+quitMessages :: [Message]
+quitMessages = ["\EOT", "\ETX", "/q"]
 
 endpoint :: Url 'Http
 endpoint = http "front2.omegle.com"
@@ -40,6 +65,7 @@ endpoint = http "front2.omegle.com"
 userAgent :: BS.ByteString
 userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36"
 
+headers :: Option scheme
 headers = header "Referer" "http://www.omegle.com/" <>
     header "User-Agent" userAgent <>
     header "Cache-Control" "no-cache" <>
@@ -47,128 +73,79 @@ headers = header "Referer" "http://www.omegle.com/" <>
     header "Accept" "application/json" <>
     header "Content-Type" "application/x-www-form-urlencoded; charset=UTF-8"
 
-likes :: IO [String]
-likes = getArgs <&> headMay <<&>> words <&> concat
+makeCall callPoint reqBody respType = runReq defaultHttpConfig $ req POST (endpoint /: callPoint) (ReqBodyUrlEnc reqBody) respType headers
 
-randid :: IO String
-randid = replicateM 7 $ randomRIO ('A', 'Z')
+likes :: MonadIO m => m [Like]
+likes = getCompose $ T.split (==',') <$> Compose (head <$> getArgs)
 
 loginQuery :: IO (Option 'Http)
 loginQuery = do
-    rand <- randid
+    rand <- replicateM 7 $ randomRIO ('A', 'Z')
     likesList <- likes
-    return $ "rcs" =: ("1" :: Text) <>
-        "firstevents" =: ("1" :: Text) <>
+    pure $ "rcs" =: "1" <>
+        "firstevents" =: "1" <>
         queryFlag "spid" <>
         "randid" =: rand <>
-        "topics" =: (LBS.unpack . encode $ likesList :: Text) <>
-        "lang" =: ("en" :: Text)
+        "topics" =: decodeUtf8 . toStrict . encode $ likesList <>
+        "lang" =: "en"
 
-type EventType = Text
-type MessageBody = Text
+processInput :: MonadIO m => ClientId -> m ()
+processInput clientId = do
+    msg <- getLine
+    if msg `elem` quitMessages
+    then disconnect clientId
+    else send clientId msg
 
-newtype Message = Message {
-    msgs :: [MessageBody]
-} deriving (Eq, Generic, Show)
+failure clientId (SomeException e) = do
+    putStrLn "failed to send... somebody disconnected!"
+    disconnect clientId
 
-instance FromJSON Message where
-    parseJSON = genericParseJSON defaultOptions { unwrapUnaryRecords = True }
-
-type CommonLike = Text
-
--- MessageEvent | LikesEvent etc?
-data Event = Event {
-    eventName :: EventType,
-    eventBody :: Message
-} deriving (Eq, Generic, Show)
-
-instance FromJSON Event where
-    parseJSON = \case
-        (Array a) -> case V.toList a of
-            [String a] -> return $ Event (T.unpack a) $ Message []
-            [String a, String b] -> return $ Event (T.unpack a) $ Message [T.unpack b]
-            [String a, Array b] -> case V.toList b of
-                Array a -> return $ case a of
-                    [String c, String d] -> return $ Event (T.unpack a) $ Message [T.unpack c, T.unpack d]
-                    [String e] -> return $ Event (T.unpack a) $ Message [T.unpack e]
-                xs -> error $ "Subarray is wrong" ++ show xs
-            [String a, String b, String c] -> error $ show $ [a, b, c] <&> T.unpack
-            (String a:xs) -> if a == "statusInfo" then
-                    return $ Event (T.unpack a) $ Message []
-                else
-                    error $ "Array is wrong" ++ show xs
-        _ -> error "Not array"
-
-data LoginResponse = LoginResponse {
-    clientID :: Text,
-    events   :: [Event]
-} deriving (Eq, FromJSON, Generic, Show)
-
---postReq :: (FromJSON a) => String -> Query -> Req (JsonResponse a)
---postReq urlFragment postQuery = runReq defaultHttpConfig $ req POST (endpoint /: urlFragment) NoReqBody jsonResponse postQuery
-
-login :: IO ()
-login = do
-    likesList <- likes
-    putStrLn $ "Connecting with likes " ++ intercalate ", " likesList
-    query <- loginQuery
-    reqConnect <- runReq defaultHttpConfig $ req POST (endpoint /: "start") NoReqBody jsonResponse query
-    let loginBody = responseBody reqConnect :: LoginResponse
-    let clientId = clientID loginBody
-    putStrLn $ "Client ID: " ++ clientId
-    installHandler keyboardTermination (Catch $ disconnect clientId) Nothing
-    parseEvents clientId (events loginBody)
-    concurrently_ (
-        doEvents clientId
-        ) (
-        forever $ (getLine >>= \msg -> if "\EOT" /= msg && "\ETX" /= msg && "/q" /= msg then send clientId msg else disconnect clientId) `catch` \(SomeException e) -> putStrLn "failed to send... somebody disconnected!" >> disconnect clientId
-        )
-
-connected :: IO ()
-connected = putStrLn "Connected."
-
-commonLikes :: [Text] -> IO ()
-commonLikes likes = putStrLn $ "Common likes: " ++ intercalate ", " likes
-
-gotMessage :: Text -> IO ()
-gotMessage = putStrLn . ("Stranger: " ++)
-
-parseEvents :: Text -> [Event] -> IO ()
+parseEvents :: MonadIO m => Text -> [Event a] -> m ()
 parseEvents = mapM_ . parseEvent
 
-parseEvent :: Text -> Event -> IO ()
-parseEvent clientId event = case eventName event of
+parseEvent :: MonadIO m => Text -> Event a -> m ()
+parseEvent clientId event = case eventType event of
     "waiting" -> putStrLn "Waiting..."
-    "connected" -> connected
-    "commonLikes" -> commonLikes . msgs . eventBody $ event
+    "connected" -> putStrLn "Connected."
+    "commonLikes" -> putStrLn . ("Common likes: " <>) . intercalate ", " . eventBody $ event
     "typing" -> putStrLn "Stranger typing..."
     "stoppedTyping" -> putStrLn "Stranger stopped typing."
-    "gotMessage" -> gotMessage . head . msgs . eventBody $ event
+    "gotMessage" -> putStrLn . ("Stranger: " <>) . head . eventBody $ event
     "strangerDisconnected" -> do
         putStrLn "Stranger disconnected."
         disconnect clientId
-    "statusInfo" -> mempty
-    "identDigests" -> mempty
+    "statusInfo" -> pure ()
+    "identDigests" -> pure ()
     "error" ->
-        putStrLn $ ("Error: " ++) . head . msgs . eventBody $ event
+        putStrLn $ ("Error: " <>) . eventBody $ event
+    _ -> pure ()
 
-doEvents :: Text -> IO ()
-doEvents clientId = do
+doEvents :: MonadIO m => Text -> m ()
+doEvents clientId = forever $ do
     reqEvents <- runReq defaultHttpConfig $ req POST (endpoint /: "events") (ReqBodyUrlEnc ("id" =: clientId)) jsonResponse headers
-    let body = responseBody reqEvents :: [Event]
+    let body = responseBody reqEvents :: [Event a]
     parseEvents clientId body
-    doEvents clientId
 
-disconnect :: Text -> IO ()
+disconnect :: MonadIO m => Text -> m ()
 disconnect clientId = do
     putStrLn "Disconnecting..."
     runReq defaultHttpConfig $ req POST (endpoint /: "disconnect") (ReqBodyUrlEnc ("id" =: clientId)) ignoreResponse headers
     exitSuccess
 
-send :: Text -> Text -> IO ()
+send :: MonadIO m => Text -> Text -> m ()
 send clientId messageText = do
     reqSend <- runReq defaultHttpConfig $ req POST (endpoint /: "send") (ReqBodyUrlEnc ("id" =: clientId <> "msg" =: messageText)) ignoreResponse headers
-    putStrLn $ "You: " ++ messageText
+    putStrLn $ "You: " <> messageText
 
 main :: IO ()
-main = login
+main = do
+    likesList <- likes
+    putStrLn $ "Connecting with likes " <> T.intercalate ", " likesList
+    query <- loginQuery
+    reqConnect <- runReq defaultHttpConfig $ req POST (endpoint /: "start") NoReqBody jsonResponse query
+    let loginBody = responseBody reqConnect :: LoginResponse a
+    let clientId = clientID loginBody
+    putStrLn $ "Client ID: " <> clientId
+    installHandler keyboardTermination (Catch $ disconnect clientId) Nothing
+    parseEvents clientId (events loginBody)
+    concurrently_ (doEvents clientId) . forever $ catch (processInput clientId) (failure clientId)

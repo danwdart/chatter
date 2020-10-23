@@ -14,8 +14,6 @@ extra-deps:
   - iso8601-time-0.1.5@sha256:4b690a86f4948557c802b5298e07d9076ef4ea7142baaad20c9847a9030a8c40,1417
   - random-1.1@sha256:7b67624fd76ddf97c206de0801dc7e888097e9d572974be9b9ea6551d76965df,1777
   - req-3.1.0@sha256:c42bf205421a3a07749c725d1a9ebd494dd577cd2f7f62e7ff26a98b3229da1c,4800
-  - safe-0.3.18@sha256:6aa17f30b93a39f60e132fca490a3995db43bf32cf868708327a2f4b526c217f,2405
-  - safe-exceptions-0.1.7.0@sha256:416cad3470889813fbffd9dce83c7610268a4a52acadeb87a66e388e09a90275,1414
   - unordered-containers-0.2.10.0@sha256:5e9b095a9283d9e2f064fec73a81a6b6ea0b7fda3f219a8175785d2d2a3de204,5199
   - vector-0.12.1.2@sha256:9291bc581f36e51d5bda9fce57cb980fbec3dd292996896f285fef39eb80a9a0,7364
   - websockets-0.12.7.1@sha256:4363a5ca794af094971266a1397807ac55d5b3124645060fb78c64ac4c88a1f1,7863
@@ -48,6 +46,7 @@ extra-deps:
   - network-uri-2.6.3.0@sha256:d2d9ff3a80d9b2d1ff317a354bc0c56cc109c69a4c2449e5fc712d3ddce83ede,2902
   - primitive-0.7.0.1@sha256:a381571c36edc7dca28b77fe8159b43c14c640087ec5946adacf949feec64231,3433
   - retry-0.8.1.2@sha256:b81e7d7e5f068da82349a3c157a2ab25d399c9ca4841d1b6e54e8c4050cb065f,2189
+  - safe-exceptions-0.1.7.1@sha256:ccf8dacc48a8fbc8450de9d3ae6f949067bb0c96d52bb66e3044b5cd046382d5,1360
   - scientific-0.3.6.2@sha256:dd49abc76bd8e2b57e7a057dc2bb742a00527b4bf9350f9374be03b5934e55d8,4679
   - streaming-commons-0.2.1.2@sha256:7830ce8a437bbe8b6546b03308d86e2f6c96bc1b62c2d0c007c44b27f3849a20,4990
   - tagged-0.8.6@sha256:1f7ca84e6c88cbb923641c60041c9f56c34f1a889759cc073cdf10542b441ff9,2606
@@ -93,6 +92,6 @@ extra-deps:
   - cabal-doctest-1.0.8@sha256:34dff6369d417df2699af4e15f06bc181d495eca9c51efde173deae2053c197c,1491
 allow-newer: true
 ghc-options:
-  other: -Wall -Werror
+  chatter: -Wall -Werror
 # extra-include-dirs: [/path/to/dir]
 # extra-lib-dirs: [/path/to/dir]
