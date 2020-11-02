@@ -7,6 +7,7 @@ module Lib.Prelude (
     print,
     printError,
     getArgs,
+    sshow,
     MonadIO (..),
     ) where
 
