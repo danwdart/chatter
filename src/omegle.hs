@@ -4,24 +4,20 @@
 {-# LANGUAGE GeneralisedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase                 #-}
 {-# LANGUAGE OverloadedStrings          #-}
+{-# OPTIONS_GHC -Wno-name-shadowing #-}
 
 module Main where
 
 import           Control.Concurrent.Async
 import           Control.Exception
 import           Control.Monad
-import           Control.Monad.IO.Class
 import           Data.Aeson
 import qualified Data.ByteString.Char8      as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
-import           Data.Function
 import           Data.Functor
 import           Data.List
-import           Data.Maybe
-import           Data.Text                  (Text)
 import qualified Data.Text                  as T
 import qualified Data.Vector                as V
-import           Debug.Trace
 import           GHC.Generics
 import           Network.HTTP.Req
 import           Safe                       (headMay)
@@ -41,6 +37,7 @@ endpoint = http "front2.omegle.com"
 userAgent :: BS.ByteString
 userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36"
 
+headers :: Option scheme
 headers = header "Referer" "http://www.omegle.com/" <>
     header "User-Agent" userAgent <>
     header "Cache-Control" "no-cache" <>
@@ -97,6 +94,7 @@ instance FromJSON Event where
                     return $ Event (T.unpack a) $ Message []
                 else 
                     error $ "Array is wrong" ++ show xs
+            _ -> error "Unknown array"
         _ -> error "Not array"
 
 data LoginResponse = LoginResponse {
@@ -116,12 +114,12 @@ login = do
     let loginBody = responseBody reqConnect :: LoginResponse
     let clientId = clientID loginBody
     putStrLn $ "Client ID: " ++ clientId
-    installHandler keyboardTermination (Catch $ disconnect clientId) Nothing
+    _ <- installHandler keyboardTermination (Catch $ disconnect clientId) Nothing
     parseEvents clientId (events loginBody)
     concurrently_ (
         doEvents clientId
         ) (
-        forever $ (getLine >>= \msg -> if "\EOT" /= msg && "\ETX" /= msg && "/q" /= msg then send clientId msg else disconnect clientId) `catch` \(SomeException e) -> putStrLn "failed to send... somebody disconnected!" >> disconnect clientId
+        forever $ (getLine >>= \msg -> if "\EOT" /= msg && "\ETX" /= msg && "/q" /= msg then send clientId msg else disconnect clientId) `catch` \(SomeException _) -> putStrLn "failed to send... somebody disconnected!" >> disconnect clientId
         )
 
 connected :: IO ()
@@ -151,6 +149,7 @@ parseEvent clientId event = case eventName event of
     "identDigests" -> mempty
     "error" ->
         putStrLn $ ("Error: " ++) . head . msgs . eventBody $ event
+    _ -> error "I don't know this message"
 
 doEvents :: String -> IO ()
 doEvents clientId = do
@@ -162,12 +161,12 @@ doEvents clientId = do
 disconnect :: String -> IO ()
 disconnect clientId = do
     putStrLn "Disconnecting..."
-    runReq defaultHttpConfig $ req POST (endpoint /: "disconnect") (ReqBodyUrlEnc ("id" =: clientId)) ignoreResponse headers
+    _ <- runReq defaultHttpConfig $ req POST (endpoint /: "disconnect") (ReqBodyUrlEnc ("id" =: clientId)) ignoreResponse headers
     exitSuccess
 
 send :: String -> String -> IO ()
 send clientId messageText = do
-    reqSend <- runReq defaultHttpConfig $ req POST (endpoint /: "send") (ReqBodyUrlEnc ("id" =: clientId <> "msg" =: messageText)) ignoreResponse headers
+    _ <- runReq defaultHttpConfig $ req POST (endpoint /: "send") (ReqBodyUrlEnc ("id" =: clientId <> "msg" =: messageText)) ignoreResponse headers
     putStrLn $ "You: " ++ messageText
 
 main :: IO ()

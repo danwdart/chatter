@@ -1,5 +1,5 @@
 {-# LANGUAGE LambdaCase, OverloadedStrings #-}
-{-# OPTIONS_GHC -Wall -Werror -Wno-type-defaults -Wno-unused-imports #-}
+{-# OPTIONS_GHC -Wno-type-defaults -Wno-unused-imports #-}
 
 import Control.Exception
 import Control.Monad
