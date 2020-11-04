@@ -2,11 +2,11 @@
 
 module Lib.Prelude where
 
-import qualified Prelude as P (putStrLn, print)
-import Prelude hiding (putStrLn, print)
-import Control.Monad.IO.Class
-import Data.String
-import System.IO
+import           Control.Monad.IO.Class
+import           Data.String
+import           Prelude                hiding (print, putStrLn)
+import qualified Prelude                as P (print, putStrLn)
+import           System.IO
 
 toString :: (IsString s, Show s) => s -> String
 toString = read . show

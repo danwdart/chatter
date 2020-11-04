@@ -92,7 +92,7 @@ instance FromJSON Event where
             [String a, String b, String c] -> error $ show $ [a, b, c] <&> T.unpack
             (String a:xs) -> if a == "statusInfo" then
                     return $ Event (T.unpack a) $ Message []
-                else 
+                else
                     error $ "Array is wrong" ++ show xs
             _ -> error "Unknown array"
         _ -> error "Not array"
