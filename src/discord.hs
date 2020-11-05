@@ -1,5 +1,6 @@
 {-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE UnicodeSyntax     #-}
 {-# OPTIONS_GHC -Wno-type-defaults -Wno-unused-imports #-}
 
 import           Control.Exception
@@ -28,20 +29,20 @@ type Username = Text
 type MessageText = Text
 type MessageResult = Either RestCallErrorCode Message
 
-handleStart :: ChannelId -> DiscordHandle -> IO ()
+handleStart ∷ ChannelId → DiscordHandle → IO ()
 handleStart channelId h = do
     putStrLn "Start handler called"
     -- Right user <- restCall h R.GetCurrentUser
     -- channel <- restCall h (R.GetChannel channelId)
     void $ sendMessage h channelId "Bot Started"
-    void $ forever $ sendMessageFromInput h channelId
+    void . forever $ sendMessageFromInput h channelId
 
-sendMessage :: DiscordHandle -> ChannelId -> MessageText -> IO MessageResult
+sendMessage ∷ DiscordHandle → ChannelId → MessageText → IO MessageResult
 sendMessage h channelId msg = do
     putStrLn $ "Sending a message to channel " <> show channelId
     restCall h . R.CreateMessage channelId $ msg
 
-handleMessage :: ChannelId -> DiscordHandle -> Username -> MessageText -> IO ()
+handleMessage ∷ ChannelId → DiscordHandle → Username → MessageText → IO ()
 handleMessage channelId h username = \case
     "/quit" -> do
         _ <- sendMsg "Quitting Discord Bot"
@@ -52,7 +53,7 @@ handleMessage channelId h username = \case
     where
         sendMsg = sendMessage h channelId
 
-handleEvent :: ChannelId -> DiscordHandle -> Event -> IO ()
+handleEvent ∷ ChannelId → DiscordHandle → Event → IO ()
 handleEvent channelId h = \case
     MessageCreate m -> do
         let author = messageAuthor m
@@ -70,10 +71,10 @@ handleEvent channelId h = \case
         putStrLn "Event detected. Not handled."
         print m
 
-handleQuit :: IO ()
+handleQuit ∷ IO ()
 handleQuit = putStrLn "Quit handler called"
 
-runDiscordOpts :: Token -> ChannelId -> RunDiscordOpts
+runDiscordOpts ∷ Token → ChannelId → RunDiscordOpts
 runDiscordOpts token channelId = RunDiscordOpts {
     discordToken = token,
     discordOnStart = handleStart channelId,
@@ -83,7 +84,7 @@ runDiscordOpts token channelId = RunDiscordOpts {
     discordForkThreadForEvents = False
 }
 
-sendMessageFromInput :: DiscordHandle -> ChannelId -> IO ()
+sendMessageFromInput ∷ DiscordHandle → ChannelId → IO ()
 sendMessageFromInput h channelId = do
     msg <- getLine
     if "\EOT" /= msg && "\ETX" /= msg && "/q" /= msg
@@ -93,14 +94,12 @@ sendMessageFromInput h channelId = do
             stopDiscord h
             exitSuccess
 
-main :: IO ()
-main = void $ runExceptT $ do
+main ∷ IO ()
+main = void . runExceptT $ (do
     putStrLn "Chiscord v0.1"
     putStrLn "Loading auth token"
-    token <- catchE (ExceptT $ tryJust (guard . isDoesNotExistError) (getEnv "DISCORD_AUTH_TOKEN")) $
-        const $ fail "Failed to get the authentication token. Please set the environment variable DISCORD_AUTH_TOKEN to your token & make sure you include DISCORD_CHANNEL_ID. See https://github.com/aquarial/discord-haskell/wiki/Creating-your-first-Bot for more details."
-    channelId <- catchE (ExceptT $ tryJust (guard . isDoesNotExistError) (getEnv "DISCORD_CHANNEL_ID")) $
-        const $ fail "Failed to get the channel ID. Please set the environment variable DISCORD_CHANNEL_ID."
+    token <- catchE (ExceptT $ tryJust (guard . isDoesNotExistError) (getEnv "DISCORD_AUTH_TOKEN")) . const $ fail "Failed to get the authentication token. Please set the environment variable DISCORD_AUTH_TOKEN to your token & make sure you include DISCORD_CHANNEL_ID. See https://github.com/aquarial/discord-haskell/wiki/Creating-your-first-Bot for more details."
+    channelId <- catchE (ExceptT $ tryJust (guard . isDoesNotExistError) (getEnv "DISCORD_CHANNEL_ID")) . const $ fail "Failed to get the channel ID. Please set the environment variable DISCORD_CHANNEL_ID."
     putStrLn "Starting bot"
-    void $ liftIO . runDiscord . runDiscordOpts (T.pack token) $ fromIntegral $ read channelId
-    putStrLn "Bot stopped"
+    void . liftIO . runDiscord . runDiscordOpts (T.pack token) $ fromIntegral (read channelId)
+    putStrLn "Bot stopped")

@@ -1,9 +1,9 @@
-{-# LANGUAGE DataKinds                  #-}
-{-# LANGUAGE DeriveAnyClass             #-}
-{-# LANGUAGE DeriveGeneric              #-}
-{-# LANGUAGE GeneralisedNewtypeDeriving #-}
-{-# LANGUAGE LambdaCase                 #-}
-{-# LANGUAGE OverloadedStrings          #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE DeriveGeneric     #-}
+
+{-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-name-shadowing #-}
 
 module Main where
@@ -83,17 +83,17 @@ data Event = Event {
 instance FromJSON Event where
     parseJSON = \case
         (Array a) -> case V.toList a of
-            [String a] -> return $ Event (T.unpack a) $ Message []
-            [String a, String b] -> return $ Event (T.unpack a) $ Message [T.unpack b]
+            [String a] -> return . Event (T.unpack a) $ Message []
+            [String a, String b] -> return . Event (T.unpack a) $ Message [T.unpack b]
             [String a, Array b] -> case V.toList b of
-                [String c, String d] -> return $ Event (T.unpack a) $ Message [T.unpack c, T.unpack d]
-                [String e] -> return $ Event (T.unpack a) $ Message [T.unpack e]
-                xs -> error $ "Subarray is wrong" ++ show xs
-            [String a, String b, String c] -> error $ show $ [a, b, c] <&> T.unpack
+                [String c, String d] -> return . Event (T.unpack a) $ Message [T.unpack c, T.unpack d]
+                [String e] -> return . Event (T.unpack a) $ Message [T.unpack e]
+                xs -> error $ "Subarray is wrong" <> show xs
+            [String a, String b, String c] -> error . show $ ([a, b, c] <&> T.unpack)
             (String a:xs) -> if a == "statusInfo" then
-                    return $ Event (T.unpack a) $ Message []
+                    return . Event (T.unpack a) $ Message []
                 else
-                    error $ "Array is wrong" ++ show xs
+                    error $ "Array is wrong" <> show xs
             _ -> error "Unknown array"
         _ -> error "Not array"
 
@@ -108,12 +108,12 @@ data LoginResponse = LoginResponse {
 login :: IO ()
 login = do
     likesList <- likes
-    putStrLn $ "Connecting with likes " ++ intercalate ", " likesList
+    putStrLn $ "Connecting with likes " <> intercalate ", " likesList
     query <- loginQuery
     reqConnect <- runReq defaultHttpConfig $ req POST (endpoint /: "start") NoReqBody jsonResponse query
     let loginBody = responseBody reqConnect :: LoginResponse
     let clientId = clientID loginBody
-    putStrLn $ "Client ID: " ++ clientId
+    putStrLn $ "Client ID: " <> clientId
     _ <- installHandler keyboardTermination (Catch $ disconnect clientId) Nothing
     parseEvents clientId (events loginBody)
     concurrently_ (
@@ -126,7 +126,7 @@ connected :: IO ()
 connected = putStrLn "Connected."
 
 commonLikes :: [String] -> IO ()
-commonLikes likes = putStrLn $ "Common likes: " ++ intercalate ", " likes
+commonLikes likes = putStrLn $ "Common likes: " <> intercalate ", " likes
 
 gotMessage :: String -> IO ()
 gotMessage = putStrLn . ("Stranger: " ++)
@@ -148,7 +148,7 @@ parseEvent clientId event = case eventName event of
     "statusInfo" -> mempty
     "identDigests" -> mempty
     "error" ->
-        putStrLn $ ("Error: " ++) . head . msgs . eventBody $ event
+        putStrLn . ("Error: " ++) . head . msgs . eventBody $ event
     _ -> error "I don't know this message"
 
 doEvents :: String -> IO ()
@@ -167,7 +167,7 @@ disconnect clientId = do
 send :: String -> String -> IO ()
 send clientId messageText = do
     _ <- runReq defaultHttpConfig $ req POST (endpoint /: "send") (ReqBodyUrlEnc ("id" =: clientId <> "msg" =: messageText)) ignoreResponse headers
-    putStrLn $ "You: " ++ messageText
+    putStrLn $ "You: " <> messageText
 
 main :: IO ()
 main = login
