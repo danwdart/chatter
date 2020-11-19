@@ -1,11 +1,9 @@
-resolver: nightly-2020-11-04
+resolver: lts-16.20
 packages:
 - .
 extra-deps:
 # Still on an old discord-haskell...
 - discord-haskell-1.6.0@sha256:31fa17a469dabee9e543a264fa958dc6fbf8119b3626fa06a595208114b7c3a2,3798
-- aeson-1.4.7.1@sha256:6d8d2fd959b7122a1df9389cf4eca30420a053d67289f92cdc0dbc0dab3530ba,7098
-- base64-bytestring-1.0.0.3@sha256:6c82d900465345e30ff0eeb9a1374fbd2955c8e5ca6206e03669f04575830f88,2242
 - emoji-0.1.0.2@sha256:d995572a5c7dcd28f98eb15c6e387a7b3bda1ac2477ab0d9dba8580d5d7b161f,1273
 - req-3.1.0@sha256:b058fd588ccdbced9e7d33b9112cd41960f29ce90acc7d77e2dd7518da171a01,4926
 ghc-options:
