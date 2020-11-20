@@ -1,6 +1,7 @@
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE UnicodeSyntax     #-}
 
 {-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -26,18 +27,18 @@ import           System.Exit
 import           System.Posix.Signals
 import           System.Random
 
-(<<&>>) :: (Functor f1, Functor f2) => f1 (f2 a) -> (a -> b) -> f1 (f2 b)
+(<<&>>) ∷ (Functor f1, Functor f2) ⇒ f1 (f2 a) → (a → b) → f1 (f2 b)
 (<<&>>) = flip $ (<$>) . (<$>)
 
 -- Let's do omegle with pure stdin/stdout
 
-endpoint :: Url 'Http
+endpoint ∷ Url 'Http
 endpoint = http "front2.omegle.com"
 
-userAgent :: BS.ByteString
+userAgent ∷ BS.ByteString
 userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36"
 
-headers :: Option scheme
+headers ∷ Option scheme
 headers = header "Referer" "http://www.omegle.com/" <>
     header "User-Agent" userAgent <>
     header "Cache-Control" "no-cache" <>
@@ -45,13 +46,13 @@ headers = header "Referer" "http://www.omegle.com/" <>
     header "Accept" "application/json" <>
     header "Content-Type" "application/x-www-form-urlencoded; charset=UTF-8"
 
-likes :: IO [String]
+likes ∷ IO [String]
 likes = getArgs <&> headMay <<&>> words <&> concat
 
-randid :: IO String
+randid ∷ IO String
 randid = replicateM 7 $ randomRIO ('A', 'Z')
 
-loginQuery :: IO (Option 'Http)
+loginQuery ∷ IO (Option 'Http)
 loginQuery = do
     rand <- randid
     likesList <- likes
@@ -105,7 +106,7 @@ data LoginResponse = LoginResponse {
 --postReq :: (FromJSON a) => String -> Query -> Req (JsonResponse a)
 --postReq urlFragment postQuery = runReq defaultHttpConfig $ req POST (endpoint /: urlFragment) NoReqBody jsonResponse postQuery
 
-login :: IO ()
+login ∷ IO ()
 login = do
     likesList <- likes
     putStrLn $ "Connecting with likes " <> intercalate ", " likesList
@@ -122,19 +123,19 @@ login = do
         forever $ (getLine >>= \msg -> if "\EOT" /= msg && "\ETX" /= msg && "/q" /= msg then send clientId msg else disconnect clientId) `catch` \(SomeException _) -> putStrLn "failed to send... somebody disconnected!" >> disconnect clientId
         )
 
-connected :: IO ()
+connected ∷ IO ()
 connected = putStrLn "Connected."
 
-commonLikes :: [String] -> IO ()
+commonLikes ∷ [String] → IO ()
 commonLikes likes = putStrLn $ "Common likes: " <> intercalate ", " likes
 
-gotMessage :: String -> IO ()
+gotMessage ∷ String → IO ()
 gotMessage = putStrLn . ("Stranger: " ++)
 
-parseEvents :: String -> [Event] -> IO ()
+parseEvents ∷ String → [Event] → IO ()
 parseEvents = mapM_ . parseEvent
 
-parseEvent :: String -> Event -> IO ()
+parseEvent ∷ String → Event → IO ()
 parseEvent clientId event = case eventName event of
     "waiting" -> putStrLn "Waiting..."
     "connected" -> connected
@@ -151,23 +152,23 @@ parseEvent clientId event = case eventName event of
         putStrLn . ("Error: " ++) . head . msgs . eventBody $ event
     _ -> error "I don't know this message"
 
-doEvents :: String -> IO ()
+doEvents ∷ String → IO ()
 doEvents clientId = do
     reqEvents <- runReq defaultHttpConfig $ req POST (endpoint /: "events") (ReqBodyUrlEnc ("id" =: clientId)) jsonResponse headers
     let body = responseBody reqEvents :: [Event]
     parseEvents clientId body
     doEvents clientId
 
-disconnect :: String -> IO ()
+disconnect ∷ String → IO ()
 disconnect clientId = do
     putStrLn "Disconnecting..."
     _ <- runReq defaultHttpConfig $ req POST (endpoint /: "disconnect") (ReqBodyUrlEnc ("id" =: clientId)) ignoreResponse headers
     exitSuccess
 
-send :: String -> String -> IO ()
+send ∷ String → String → IO ()
 send clientId messageText = do
     _ <- runReq defaultHttpConfig $ req POST (endpoint /: "send") (ReqBodyUrlEnc ("id" =: clientId <> "msg" =: messageText)) ignoreResponse headers
     putStrLn $ "You: " <> messageText
 
-main :: IO ()
+main ∷ IO ()
 main = login
