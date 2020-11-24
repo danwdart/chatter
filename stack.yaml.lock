@@ -27,7 +27,7 @@ packages:
     hackage: req-3.1.0@sha256:b058fd588ccdbced9e7d33b9112cd41960f29ce90acc7d77e2dd7518da171a01,4926
 snapshots:
 - completed:
-    size: 532177
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/20.yaml
-    sha256: 0e14ba5603f01e8496e8984fd84b545a012ca723f51a098c6c9d3694e404dc6d
-  original: lts-16.20
+    size: 532832
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/23.yaml
+    sha256: fbb2a0519008533924c7753bd7164ddd1009f09504eb06674acad6049b46db09
+  original: lts-16.23
