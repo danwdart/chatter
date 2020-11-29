@@ -29,38 +29,38 @@ type Username = Text
 type MessageText = Text
 type MessageResult = Either RestCallErrorCode Message
 
-handleStart ∷ ChannelId → DiscordHandle → IO ()
-handleStart channelId h = do
+handleStart ∷ ChannelId → DiscordHandler ()
+handleStart channelId = do
     putStrLn "Start handler called"
     -- Right user <- restCall h R.GetCurrentUser
     -- channel <- restCall h (R.GetChannel channelId)
-    void $ sendMessage h channelId "Bot Started"
-    void . forever $ sendMessageFromInput h channelId
+    void $ sendMessage channelId "Bot Started"
+    void . forever $ sendMessageFromInput channelId
 
-sendMessage ∷ DiscordHandle → ChannelId → MessageText → IO MessageResult
-sendMessage h channelId msg = do
+sendMessage ∷ ChannelId → MessageText → DiscordHandler MessageResult
+sendMessage channelId msg = do
     putStrLn $ "Sending a message to channel " <> show channelId
-    restCall h . R.CreateMessage channelId $ msg
+    restCall . R.CreateMessage channelId $ msg
 
-handleMessage ∷ ChannelId → DiscordHandle → Username → MessageText → IO ()
-handleMessage channelId h username = \case
+handleMessage ∷ ChannelId → Username → MessageText → DiscordHandler ()
+handleMessage channelId username = \case
     "/quit" -> do
         _ <- sendMsg "Quitting Discord Bot"
         putStrLn "Received quit message"
-        stopDiscord h
-        exitSuccess
+        stopDiscord
+        liftIO exitSuccess
     msg -> putStrLn $ username <> ": " <> msg
     where
-        sendMsg = sendMessage h channelId
+        sendMsg = sendMessage channelId
 
-handleEvent ∷ ChannelId → DiscordHandle → Event → IO ()
-handleEvent channelId h = \case
+handleEvent ∷ ChannelId → Event → DiscordHandler ()
+handleEvent channelId = \case
     MessageCreate m -> do
         let author = messageAuthor m
         -- let isBot = userIsBot author
         let msg = messageText m
         let username = userName author
-        handleMessage channelId h username msg
+        handleMessage channelId username msg
     Ready {} -> putStrLn "Received Ready event."
     GuildCreate {} -> putStrLn "Received GuildCreate event."
     ChannelCreate ChannelDirectMessage {} -> putStrLn "Received ChannelCreate - direct message event."
@@ -84,15 +84,15 @@ runDiscordOpts token channelId = RunDiscordOpts {
     discordForkThreadForEvents = False
 }
 
-sendMessageFromInput ∷ DiscordHandle → ChannelId → IO ()
-sendMessageFromInput h channelId = do
-    msg <- getLine
+sendMessageFromInput ∷ ChannelId → DiscordHandler ()
+sendMessageFromInput channelId = do
+    msg <- liftIO getLine
     if "\EOT" /= msg && "\ETX" /= msg && "/q" /= msg
-        then void $ sendMessage h channelId (T.pack msg)
+        then void $ sendMessage channelId (T.pack msg)
         else do
-            handleQuit
-            stopDiscord h
-            exitSuccess
+            liftIO handleQuit
+            stopDiscord
+            liftIO exitSuccess
 
 main ∷ IO ()
 main = void . runExceptT $ (do
