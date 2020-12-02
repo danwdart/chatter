@@ -17,6 +17,6 @@ interact {
 
 expect_background {
     "asl\n" {
-        send -- "I'm 28, Dan\n"
+        send -- "I'm 29, Dan from England.\n"
     }
 }
