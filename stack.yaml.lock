@@ -20,7 +20,7 @@ packages:
     hackage: emoji-0.1.0.2@sha256:d995572a5c7dcd28f98eb15c6e387a7b3bda1ac2477ab0d9dba8580d5d7b161f,1273
 snapshots:
 - completed:
-    size: 556553
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2020/12/7.yaml
-    sha256: f52a57e6396150023b94005171a81c298457ac8785da76591c02f50ebdfd0b7c
-  original: nightly-2020-12-07
+    size: 556555
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2020/12/8.yaml
+    sha256: 910d12223d0ca24222b1bbdc6046a9a8c6187cce6b235f46c44e6265bf061169
+  original: nightly-2020-12-08

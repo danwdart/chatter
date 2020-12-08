@@ -5,4 +5,4 @@ packages:
 extra-deps:
 - discord-haskell-1.8.1@sha256:86d8777ce02ed404c81d02c7b9b0fd5f870e52c6e3a07d98ce3681a7873f7e0e,3562
 - emoji-0.1.0.2@sha256:d995572a5c7dcd28f98eb15c6e387a7b3bda1ac2477ab0d9dba8580d5d7b161f,1273
-resolver: nightly-2020-12-07
+resolver: nightly-2020-12-08
