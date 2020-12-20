@@ -1,7 +1,10 @@
 {-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE UnicodeSyntax     #-}
 {-# OPTIONS_GHC -Wno-type-defaults -Wno-unused-imports #-}
+
+module Main where
 
 import           Control.Exception
 import           Control.Monad
@@ -14,20 +17,17 @@ import qualified Data.Text                  as T
 import           Discord
 import qualified Discord.Requests           as R
 import           Discord.Types              hiding (channelId)
+import           Lib.Discord.Types
 import           Lib.Prelude
-import           Prelude                    hiding (print, putStrLn)
 import           System.Environment
 import           System.Exit
 import           System.IO.Error
 import           System.Process
 
+type MessageResult = Either RestCallErrorCode Message
+
 -- guildId :: GuildId
 -- guildId = 507557271191158784
-
-type Token = Text
-type Username = Text
-type MessageText = Text
-type MessageResult = Either RestCallErrorCode Message
 
 handleStart ∷ ChannelId → DiscordHandler ()
 handleStart channelId = do

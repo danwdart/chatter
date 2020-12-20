@@ -18,6 +18,12 @@ module Lib.Prelude (
     (&&),
     getLine,
     sshow,
+    read,
+    fromIntegral,
+    return,
+    Applicative(..),
+    const,
+    (<$>),
     Maybe(..),
     Bool(..)
 ) where

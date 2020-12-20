@@ -23,6 +23,7 @@ import           Data.Text.Encoding
 import           Data.Text (Text)
 import qualified Data.Vector                as V
 import           GHC.Generics
+import           Lib.Omegle.Types
 import           Lib.Prelude
 import           Network.HTTP.Req
 import           Safe                       (headMay)
@@ -65,48 +66,11 @@ loginQuery = do
         "topics" =: (decodeUtf8 . LBS.toStrict . encode $ likesList :: Text) <>
         "lang" =: ("en" :: Text)
 
-type EventType = Text
-type MessageBody = Text
-
-newtype Message = Message {
-    msgs :: [MessageBody]
-} deriving (Eq, Generic, Show)
-
-instance FromJSON Message where
-    parseJSON = genericParseJSON defaultOptions { unwrapUnaryRecords = True }
-
-type CommonLike = Text
-
--- MessageEvent | LikesEvent etc?
-data Event = Event {
-    eventName :: EventType,
-    eventBody :: Message
-} deriving (Eq, Generic, Show)
-
-instance FromJSON Event where
-    parseJSON = \case
-        (Array a) -> case V.toList a of
-            [String a] -> return . Event a $ Message []
-            [String a, String b] -> return . Event a $ Message [b]
-            [String a, Array b] -> return . Event a $ Message $ ((\(String e) -> e) <$> V.toList b)
-            [String a, String b, String c] -> error $ sshow [a, b, c]
-            (String a:xs) -> if a == "statusInfo" then
-                    return . Event a $ Message []
-                else
-                    error $ "Array is wrong" <> show xs
-            _ -> error "Unknown array"
-        _ -> error "Not array"
-
-data LoginResponse = LoginResponse {
-    clientID :: Text,
-    events   :: [Event]
-} deriving (Eq, FromJSON, Generic, Show)
-
 --postReq :: (FromJSON a) => Text -> Query -> Req (JsonResponse a)
 --postReq urlFragment postQuery = runReq defaultHttpConfig $ req POST (endpoint /: urlFragment) NoReqBody jsonResponse postQuery
 
-login ∷ IO ()
-login = do
+main ∷ IO ()
+main = do
     likesList <- likes
     putStrLn $ "Connecting with likes " <> T.intercalate ", " likesList
     query <- loginQuery
@@ -168,6 +132,3 @@ send ∷ Text → Text → IO ()
 send clientId messageText = do
     _ <- runReq defaultHttpConfig $ req POST (endpoint /: "send") (ReqBodyUrlEnc ("id" =: clientId <> "msg" =: messageText)) ignoreResponse headers
     putStrLn $ "You: " <> messageText
-
-main ∷ IO ()
-main = login
