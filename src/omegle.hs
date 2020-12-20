@@ -47,7 +47,7 @@ headers = header "Referer" "http://www.omegle.com/" <>
     header "Content-Type" "application/x-www-form-urlencoded; charset=UTF-8"
 
 likes ∷ IO [String]
-likes = getArgs <&> headMay <<&>> words <&> concat
+likes = getArgs <<&>> words <&> concat
 
 randid ∷ IO String
 randid = replicateM 7 $ randomRIO ('A', 'Z')
