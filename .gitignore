@@ -5,4 +5,5 @@ dist-newstyle
 google.json
 *.hi
 *.o
-result
+result*
+.direnv
