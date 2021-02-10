@@ -1,5 +1,5 @@
 { nixpkgs ? import <nixpkgs> {},
-  compiler ? "ghc8102" }:
+  compiler ? "ghc8103" }:
 let
   gitignore = nixpkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ];
   myHaskellPackages = nixpkgs.pkgs.haskell.packages.${compiler}.override {
