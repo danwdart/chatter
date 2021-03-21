@@ -1,13 +1,9 @@
-{ nixpkgs ? import <nixpkgs> {},
-  compiler ? "ghc8104" }:
+{ nixpkgs ? import (fetchTarball https://github.com/NixOS/nixpkgs/archive/master.tar.gz) {},
+  compiler ? "ghc8104" }: # basement doesn't yet like 901
 let
   gitignore = nixpkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ];
   myHaskellPackages = nixpkgs.pkgs.haskell.packages.${compiler}.override {
     overrides = self: super: rec {
-      discord-haskell = self.callCabal2nix "discord-haskell" (builtins.fetchGit {
-        url = "https://github.com/aquarial/discord-haskell.git";
-        rev = "8e1988edaf9b39cc27f44c966e16a33d1ead7a35";
-      }) {};
       chatter = self.callCabal2nix "chatter" (gitignore ./.) {};
     };
   };
