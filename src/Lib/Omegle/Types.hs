@@ -1,16 +1,16 @@
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE LambdaCase        #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Lib.Omegle.Types where
 
-import Data.Aeson
-import Data.Text (Text)
-import Data.Vector as V
-import GHC.Generics
-import Lib.Prelude
+import           Data.Aeson
+import           Data.Text    (Text)
+import           Data.Vector  as V
+import           GHC.Generics
+import           Lib.Prelude
 
 type EventType = Text
 type MessageBody = Text
@@ -35,7 +35,7 @@ instance FromJSON Event where
         (Array a) -> case V.toList a of
             [String a] -> pure . Event a $ Message []
             [String a, String b] -> pure . Event a $ Message [b]
-            [String a, Array b] -> pure . Event a $ Message $ ((\(String e) -> e) <$> V.toList b)
+            [String a, Array b] -> pure . Event a $ Message ((\(String e) -> e) <$> V.toList b)
             [String a, String b, String c] -> error $ sshow [a, b, c]
             (String a:xs) -> if a == "statusInfo" then
                     pure . Event a $ Message []

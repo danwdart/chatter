@@ -1,9 +1,9 @@
 {-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE DeriveAnyClass    #-}
-{-# LANGUAGE DeriveGeneric     #-}
+
+
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE UnicodeSyntax     #-}
-{-# LANGUAGE LambdaCase        #-}
+
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-name-shadowing #-}
 
@@ -18,9 +18,9 @@ import qualified Data.ByteString.Lazy.Char8 as LBS
 import           Data.Functor
 import           Data.Functor.Compose
 import           Data.List
+import           Data.Text                  (Text)
 import qualified Data.Text                  as T
 import           Data.Text.Encoding
-import           Data.Text (Text)
 import qualified Data.Vector                as V
 import           GHC.Generics
 import           Lib.Omegle.Types
@@ -53,7 +53,7 @@ likes ∷ IO [Text]
 likes = T.pack <<$>> getArgs
 
 randid ∷ IO Text
-randid = T.pack <$> (replicateM 7 $ randomRIO ('A', 'Z'))
+randid = T.pack <$> replicateM 7 (randomRIO ('A', 'Z'))
 
 loginQuery ∷ IO (Option 'Http)
 loginQuery = do

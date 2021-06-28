@@ -30,9 +30,9 @@ module Lib.Prelude (
 
 import           Control.Monad.IO.Class
 import           Data.String
-import           Prelude                hiding (print, putStrLn, error, getLine)
-import qualified Prelude                as P (print, putStrLn, error, getLine)
-import           System.IO              hiding (print, putStrLn, error, getLine)
+import           Prelude                hiding (error, getLine, print, putStrLn)
+import qualified Prelude                as P (error, getLine, print, putStrLn)
+import           System.IO              hiding (error, getLine, print, putStrLn)
 
 toString ∷ (IsString s, Show s) ⇒ s → String
 toString = read . show
