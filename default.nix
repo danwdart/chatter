@@ -1,5 +1,5 @@
-{ nixpkgs ? import <unstable> {},
-  compiler ? "ghc8104" }: # basement doesn't yet like 901
+{ nixpkgs ? import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/master.tar.gz") {},
+  compiler ? "ghc8107" }: # basement doesn't yet like 901
 let
   gitignore = nixpkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ];
   myHaskellPackages = nixpkgs.pkgs.haskell.packages.${compiler}.override {
