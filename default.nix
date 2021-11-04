@@ -2,12 +2,13 @@
   compiler ? "ghc901" }:
 let
   gitignore = nixpkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ];
+  lib = nixpkgs.pkgs.haskell.lib;
   myHaskellPackages = nixpkgs.pkgs.haskell.packages.${compiler}.override {
     overrides = self: super: rec {
       # 1.8.4-1.8.7 are broken
       discord-haskell = self.callHackage "discord-haskell" "1.8.3" {};
       # Depends on cabal-un-published http-client versions.
-      req = nixpkgs.pkgs.haskell.lib.doJailbreak (self.callHackage "req" "3.9.1" {});
+      req = lib.doJailbreak (self.callHackage "req" "3.9.1" {});
       chatter = self.callCabal2nix "chatter" (gitignore ./.) {};
     };
   };
@@ -15,16 +16,20 @@ let
     packages = p: [
       p.chatter
     ];
-    buildInputs = [
-      nixpkgs.haskellPackages.cabal-install
-      nixpkgs.wget
-      nixpkgs.haskellPackages.ghcid
-      nixpkgs.haskellPackages.stylish-haskell
-      nixpkgs.haskellPackages.hlint
+    buildInputs = with nixpkgs; with haskellPackages; [
+      apply-refact
+      cabal-install
+      ghcid
+      hlint
+      implicit-hie
+      krank
+      stan
+      stylish-haskell
+      weeder
     ];
     # withHoogle = false;
   };
-  exe = nixpkgs.haskell.lib.justStaticExecutables (myHaskellPackages.chatter);
+  exe = lib.justStaticExecutables (myHaskellPackages.chatter);
 in
 {
   inherit shell;
