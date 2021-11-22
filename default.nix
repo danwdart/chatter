@@ -16,14 +16,16 @@ let
     packages = p: [
       p.chatter
     ];
-    buildInputs = with nixpkgs; with haskellPackages; [
+    buildInputs = with myHaskellPackages; with nixpkgs; with haskellPackages; [
       apply-refact
       cabal-install
       ghcid
+      ghcide
+      haskell-language-server
       hlint
       implicit-hie
       krank
-      stan
+      haskellPackages.stan # issue with 9.0.1
       stylish-haskell
       weeder
     ];

@@ -6,6 +6,8 @@
 
 module Main where
 
+import           Chatter.Discord.Types
+import           Chatter.Prelude
 import           Control.Exception
 import           Control.Monad
 import           Control.Monad.IO.Class
@@ -17,8 +19,6 @@ import qualified Data.Text                  as T
 import           Discord
 import qualified Discord.Requests           as R
 import           Discord.Types              hiding (channelId)
-import           Lib.Discord.Types
-import           Lib.Prelude
 import           System.Environment
 import           System.Exit
 import           System.IO.Error

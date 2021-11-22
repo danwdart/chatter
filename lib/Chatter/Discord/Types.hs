@@ -1,4 +1,4 @@
-module Lib.Discord.Types where
+module Chatter.Discord.Types where
 
 import           Data.Text (Text)
 

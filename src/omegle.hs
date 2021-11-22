@@ -9,24 +9,19 @@
 
 module Main where
 
+import           Chatter.Omegle.Types
+import           Chatter.Prelude
 import           Control.Concurrent.Async
 import           Control.Exception
 import           Control.Monad
 import           Data.Aeson
 import qualified Data.ByteString.Char8      as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
-import           Data.Functor
-import           Data.Functor.Compose
 import           Data.List
 import           Data.Text                  (Text)
 import qualified Data.Text                  as T
 import           Data.Text.Encoding
-import qualified Data.Vector                as V
-import           GHC.Generics
-import           Lib.Omegle.Types
-import           Lib.Prelude
 import           Network.HTTP.Req
-import           Safe                       (headMay)
 import           System.Environment
 import           System.Exit
 import           System.Posix.Signals
@@ -83,11 +78,11 @@ main = do
     concurrently_ (
         doEvents clientId
         ) (
-        forever $ (getLine >>= \msg -> if "\EOT" /= msg && "\ETX" /= msg && "/q" /= msg then send clientId msg else disconnect clientId) `catch` \(SomeException _) -> putStrLn "failed to send... somebody disconnected!" >> disconnect clientId
+        forever $ (getLine >>= \msg -> if "\EOT" /= msg && "\ETX" /= msg && "/q" /= msg then send clientId msg else disconnect clientId) `catch` \(SomeException _) -> putStrLn ("failed to send... somebody disconnected!" :: Text) >> disconnect clientId
         )
 
 connected ∷ IO ()
-connected = putStrLn "Connected."
+connected = putStrLn ("Connected." :: Text)
 
 commonLikes ∷ [Text] → IO ()
 commonLikes likes = putStrLn $ "Common likes: " <> T.intercalate ", " likes
@@ -100,20 +95,20 @@ parseEvents = mapM_ . parseEvent
 
 parseEvent ∷ Text → Event → IO ()
 parseEvent clientId event = case eventName event of
-    "waiting" -> putStrLn "Waiting..."
+    "waiting" -> putStrLn ("Waiting..." :: Text)
     "connected" -> connected
     "commonLikes" -> commonLikes . msgs . eventBody $ event
-    "typing" -> putStrLn "Stranger typing..."
-    "stoppedTyping" -> putStrLn "Stranger stopped typing."
+    "typing" -> putStrLn ("Stranger typing..." :: Text)
+    "stoppedTyping" -> putStrLn ("Stranger stopped typing." :: Text)
     "gotMessage" -> gotMessage . head . msgs . eventBody $ event
     "strangerDisconnected" -> do
-        putStrLn "Stranger disconnected."
+        putStrLn ("Stranger disconnected." :: Text)
         disconnect clientId
     "statusInfo" -> mempty
     "identDigests" -> mempty
     "error" ->
         putStrLn . ("Error: " <>) . head . msgs . eventBody $ event
-    _ -> error "I don't know this message"
+    _ -> error ("I don't know this message" :: Text)
 
 doEvents ∷ Text → IO ()
 doEvents clientId = do
@@ -124,7 +119,7 @@ doEvents clientId = do
 
 disconnect ∷ Text → IO ()
 disconnect clientId = do
-    putStrLn "Disconnecting..."
+    putStrLn ("Disconnecting..." :: Text)
     _ <- runReq defaultHttpConfig $ req POST (endpoint /: "disconnect") (ReqBodyUrlEnc ("id" =: clientId)) ignoreResponse headers
     exitSuccess
 

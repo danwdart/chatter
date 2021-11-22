@@ -1,7 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE UnicodeSyntax     #-}
 
-module Lib.Prelude (
+module Chatter.Prelude (
     toString,
     putStrLn,
     print,
@@ -9,7 +9,7 @@ module Lib.Prelude (
     printError,
     Eq(..),
     Show(..),
-    IO(..),
+    IO(),
     ($),
     (<>),
     (.),
@@ -25,14 +25,15 @@ module Lib.Prelude (
     const,
     (<$>),
     Maybe(..),
-    Bool(..)
+    Bool(..),
+    String()
 ) where
 
 import           Control.Monad.IO.Class
 import           Data.String
 import           Prelude                hiding (error, getLine, print, putStrLn)
 import qualified Prelude                as P (error, getLine, print, putStrLn)
-import           System.IO              hiding (error, getLine, print, putStrLn)
+import           System.IO              hiding (getLine, print, putStrLn)
 
 toString ∷ (IsString s, Show s) ⇒ s → String
 toString = read . show
