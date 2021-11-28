@@ -9,7 +9,8 @@
   - {name: unsafePerformIO, within: []} # Unsafe
 
   # _VERY_ hard to get right, use the async library instead.
-  # See also https://github.com/informatikr/hedis/issues/165
+  # 
+  # See also https://github.com/informatikr/hedis/issues/165 - krank:ignore-line
   - {name: forkIO, within: []}
   # Mostly impossible to get right, rethink what you're doing entirely.
   # See also https://www.reddit.com/r/haskell/comments/jsap9r/how_dangerous_is_forkprocess/
