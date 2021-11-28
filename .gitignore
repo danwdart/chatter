@@ -8,4 +8,6 @@ google.json
 result*
 .direnv
 hie.yaml
+.env
+jwt.secret
 .hie
