@@ -11,3 +11,4 @@ hie.yaml
 .env
 jwt.secret
 .hie
+stan.html
