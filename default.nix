@@ -1,5 +1,5 @@
 { nixpkgs ? import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/master.tar.gz") {},
-  compiler ? "ghc901" }:
+  compiler ? "ghc921" }:
 let
   gitignore = nixpkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ];
   lib = nixpkgs.pkgs.haskell.lib;
@@ -9,6 +9,8 @@ let
       discord-haskell = self.callHackage "discord-haskell" "1.8.3" {};
       # Depends on cabal-un-published http-client versions.
       req = lib.doJailbreak (self.callHackage "req" "3.9.1" {});
+      wuss = lib.doJailbreak super.wuss;
+      modern-uri = lib.doJailbreak super.modern-uri;
       chatter = self.callCabal2nix "chatter" (gitignore ./.) {};
     };
   };
