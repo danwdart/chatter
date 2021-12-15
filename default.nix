@@ -8,7 +8,7 @@ let
       # 1.8.4-1.8.7 are broken
       discord-haskell = self.callHackage "discord-haskell" "1.8.3" {};
       # Depends on cabal-un-published http-client versions.
-      req = lib.doJailbreak (self.callHackage "req" "3.9.1" {});
+      req = lib.doJailbreak (self.callHackage "req" "3.9.2" {});
       wuss = lib.doJailbreak super.wuss;
       modern-uri = lib.doJailbreak super.modern-uri;
       chatter = self.callCabal2nix "chatter" (gitignore ./.) {};
