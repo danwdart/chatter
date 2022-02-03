@@ -28,7 +28,7 @@ let
       hlint
       implicit-hie
       krank
-      haskellPackages.stan # issue with 9.0.1
+      stan
       stylish-haskell
       weeder
     ];
