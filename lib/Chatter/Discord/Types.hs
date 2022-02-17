@@ -1,3 +1,4 @@
+{-# LANGUAGE UnicodeSyntax #-}
 module Chatter.Discord.Types where
 
 import           Data.Text (Text)

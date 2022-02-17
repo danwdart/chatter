@@ -3,14 +3,15 @@
 {-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE UnicodeSyntax     #-}
 
 module Chatter.Omegle.Types where
 
-import           Data.Aeson
-import           Data.Text    (Text)
-import           Data.Vector  as V
-import           GHC.Generics
 import           Chatter.Prelude
+import           Data.Aeson
+import           Data.Text       (Text)
+import           Data.Vector     as V
+import           GHC.Generics
 
 type EventType = Text
 type MessageBody = Text
@@ -45,8 +46,8 @@ instance FromJSON Event where
         _ -> error ("Not array" :: String)
         where
             strToVal (String e) = e
-            strToVal _ = error ("Not a string" :: String)
-            
+            strToVal _          = error ("Not a string" :: String)
+
 data LoginResponse = LoginResponse {
     clientID :: Text,
     events   :: [Event]
