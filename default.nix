@@ -1,12 +1,16 @@
-{ nixpkgs ? import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/master.tar.gz") {},
-  compiler ? "ghc921" }:
+{
+  nixpkgs ? import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/haskell-updates.tar.gz") {},
+  haskell-tools ? import (builtins.fetchTarball "https://github.com/danwdart/haskell-tools/archive/master.tar.gz") {},
+  compiler ? "ghc922"
+}:
 let
   gitignore = nixpkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ];
+  tools = haskell-tools compiler;
   lib = nixpkgs.pkgs.haskell.lib;
   myHaskellPackages = nixpkgs.pkgs.haskell.packages.${compiler}.override {
     overrides = self: super: rec {
       # 1.8.4-1.8.7 are broken
-      discord-haskell = self.callHackage "discord-haskell" "1.8.3" {};
+      discord-haskell = self.callHackage "discord-haskell" "1.12.4" {};
       # Depends on cabal-un-published http-client versions.
       req = lib.doJailbreak (self.callHackage "req" "3.9.2" {});
       wuss = lib.doJailbreak super.wuss;
@@ -18,20 +22,7 @@ let
     packages = p: [
       p.chatter
     ];
-    buildInputs = with myHaskellPackages; with nixpkgs; with haskellPackages; [
-      apply-refact
-      cabal-install
-      ghcid
-      ghcide
-      haskell-language-server
-      hasktags
-      hlint
-      implicit-hie
-      krank
-      stan
-      stylish-haskell
-      weeder
-    ];
+    buildInputs = tools.defaultBuildTools;
     # withHoogle = false;
   };
   exe = lib.justStaticExecutables (myHaskellPackages.chatter);

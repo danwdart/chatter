@@ -58,7 +58,7 @@ handleEvent channelId = \case
     MessageCreate m -> do
         let author = messageAuthor m
         -- let isBot = userIsBot author
-        let msg = messageText m
+        let msg = messageContent m
         let username = userName author
         handleMessage channelId username msg
     Ready {} -> putStrLn "Received Ready event."
@@ -81,7 +81,8 @@ runDiscordOpts token channelId = RunDiscordOpts {
     discordOnEnd = handleQuit,
     discordOnEvent = handleEvent channelId,
     discordOnLog = putStrLn,
-    discordForkThreadForEvents = False
+    discordForkThreadForEvents = False,
+    discordGatewayIntent = def
 }
 
 sendMessageFromInput ∷ ChannelId → DiscordHandler ()
