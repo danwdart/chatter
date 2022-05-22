@@ -1,5 +1,5 @@
 {
-  nixpkgs ? import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/haskell-updates.tar.gz") {},
+  nixpkgs ? import <unstable> {},
   haskell-tools ? import (builtins.fetchTarball "https://github.com/danwdart/haskell-tools/archive/master.tar.gz") {},
   compiler ? "ghc922"
 }:
