@@ -53,7 +53,8 @@ loginQuery ∷ IO (Option 'Http)
 loginQuery = do
     rand <- randid
     likesList <- likes
-    pure $ "rcs" =: ("1" :: Text) <>
+    pure $
+        "caps" =: ("recaptcha2,t" :: Text) <>
         "firstevents" =: ("1" :: Text) <>
         queryFlag "spid" <>
         "randid" =: rand <>
