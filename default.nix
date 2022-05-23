@@ -21,7 +21,10 @@ let
     packages = p: [
       p.chatter
     ];
-    buildInputs = tools.defaultBuildTools;
+    buildInputs = tools.defaultBuildTools ++ (with nixpkgs; [
+      expect
+      rlwrap
+    ]);
     # withHoogle = false;
   };
   exe = lib.justStaticExecutables (myHaskellPackages.chatter);

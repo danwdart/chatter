@@ -1,5 +1,5 @@
-#!/usr/bin/expect -f
-spawn stack run $argv
+#!/usr/bin/expect --always-readline -f
+spawn cabal run chomegle $argv
 
 expect "Connecting with likes $argv"
 expect "Waiting..."

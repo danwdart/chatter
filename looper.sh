@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # TODO readline
 # rlwrap?
 history -r looper.history
