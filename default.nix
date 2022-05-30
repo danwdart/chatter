@@ -1,7 +1,7 @@
 {
   nixpkgs ? import <unstable> {},
   haskell-tools ? import (builtins.fetchTarball "https://github.com/danwdart/haskell-tools/archive/master.tar.gz") {},
-  compiler ? "ghc922"
+  compiler ? "ghc923"
 }:
 let
   gitignore = nixpkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ];
