@@ -16,7 +16,7 @@ extra-source-files:  CHANGELOG.md
 library
   default-language:    GHC2021
   default-extensions:  UnicodeSyntax
-  build-depends:       base >=4.16 && <5
+  build-depends:       base >=4.17 && <5
                      , aeson
                      , async
                      , bytestring
@@ -41,7 +41,7 @@ executable chomegle
   ghc-options:       -Wall -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
   default-language:    GHC2021
   default-extensions:  UnicodeSyntax
-  build-depends:       base >=4.16 && <5
+  build-depends:       base >=4.17 && <5
                      , aeson
                      , async
                      , bytestring
