@@ -12,13 +12,9 @@ let
   lib = nixpkgs.pkgs.haskell.lib;
   myHaskellPackages = nixpkgs.pkgs.haskell.packages.${compiler}.override {
     overrides = self: super: rec {
-      # 1.8.4-1.8.7 are broken
-      discord-haskell = self.callHackage "discord-haskell" "1.12.4" {};
-      # Depends on cabal-un-published http-client versions.
-      wuss = lib.doJailbreak super.wuss;
+      discord-haskell = lib.doJailbreak (self.callHackage "discord-haskell" "1.15.3" {});
       # not released yet
       req = self.callHackage "req" "3.13.0" {};
-      modern-uri = lib.doJailbreak super.modern-uri;
       chatter = lib.dontHaddock (self.callCabal2nix "chatter" (gitignore ./.) {});
     };
   };
