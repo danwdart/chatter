@@ -16,7 +16,7 @@ import           Control.Monad
 import           Data.Aeson
 import qualified Data.ByteString.Char8      as BS
 import qualified Data.ByteString.Lazy.Char8 as LBS
-import           Data.List
+import           Data.List                  (head)
 import           Data.Text                  (Text)
 import qualified Data.Text                  as T
 import           Data.Text.Encoding

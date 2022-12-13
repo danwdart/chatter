@@ -15,22 +15,21 @@ extra-source-files:  CHANGELOG.md
 
 library
   default-language:    GHC2021
-  default-extensions:  UnicodeSyntax
+  default-extensions:  DerivingStrategies, UnicodeSyntax
   build-depends:       base >=4.17 && <5
                      , aeson
-                     , async
-                     , bytestring
-                     , discord-haskell
-                     , mtl
-                     , process
-                     , random
-                     , req
-                     , safe
                      , text
-                     , transformers
-                     , unix
                      , vector
   ghc-options:       -Wall -Werror -haddock
+                       -Weverything
+                       -Wno-unsafe -Wno-safe
+                       -Wno-missing-import-lists
+                       -Wno-missing-export-lists
+                       -Wno-implicit-prelude
+                       -Wno-missing-safe-haskell-mode
+                       -Wno-missing-kind-signatures
+                       -Wno-prepositive-qualified-module
+                       -Wno-missing-local-signatures
   hs-source-dirs:      lib
   exposed-modules:     Chatter.Prelude
                      , Chatter.Discord.Types
@@ -39,29 +38,43 @@ library
 executable chomegle
   main-is:             omegle.hs
   ghc-options:       -Wall -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
+                       -Weverything
+                       -Wno-unsafe -Wno-safe
+                       -Wno-missing-import-lists
+                       -Wno-missing-export-lists
+                       -Wno-implicit-prelude
+                       -Wno-missing-safe-haskell-mode
+                       -Wno-missing-kind-signatures
+                       -Wno-prepositive-qualified-module
+                       -Wno-missing-local-signatures
   default-language:    GHC2021
-  default-extensions:  UnicodeSyntax
+  default-extensions:  DerivingStrategies, UnicodeSyntax
   build-depends:       base >=4.17 && <5
                      , aeson
                      , async
                      , bytestring
                      , chatter
-                     , mtl
                      , random
                      , req
-                     , safe
                      , text
                      , unix
-                     , vector
   hs-source-dirs:      src
 
 executable chiscord
   main-is:             discord.hs
   ghc-options:       -Wall -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
+                       -Weverything
+                       -Wno-unsafe -Wno-safe
+                       -Wno-missing-import-lists
+                       -Wno-missing-export-lists
+                       -Wno-implicit-prelude
+                       -Wno-missing-safe-haskell-mode
+                       -Wno-missing-kind-signatures
+                       -Wno-prepositive-qualified-module
+                       -Wno-missing-local-signatures
   default-language:    GHC2021
-  default-extensions:  UnicodeSyntax
+  default-extensions:  DerivingStrategies, UnicodeSyntax
   build-depends:       base >=4.17 && <5
-                     , async
                      , chatter
                      , discord-haskell
                      , mtl

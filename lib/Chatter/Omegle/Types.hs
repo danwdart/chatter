@@ -16,7 +16,7 @@ type MessageBody = Text
 
 newtype Message = Message {
     msgs :: [MessageBody]
-} deriving (Eq, Generic, Show)
+} deriving stock (Eq, Generic, Show)
 
 instance FromJSON Message where
     parseJSON = genericParseJSON defaultOptions { unwrapUnaryRecords = True }
@@ -27,7 +27,7 @@ type CommonLike = Text
 data Event = Event {
     eventName :: EventType,
     eventBody :: Message
-} deriving (Eq, Generic, Show)
+} deriving stock (Eq, Generic, Show)
 
 instance FromJSON Event where
     parseJSON = \case
@@ -49,4 +49,6 @@ instance FromJSON Event where
 data LoginResponse = LoginResponse {
     clientID :: Text,
     events   :: [Event]
-} deriving (Eq, FromJSON, Generic, Show)
+}
+    deriving stock (Eq, Generic, Show)
+    deriving anyclass (FromJSON)
