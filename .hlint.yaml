@@ -1,6 +1,7 @@
 - warn: {name: Use explicit module export list}
 - group: {name: dollar, enabled: true}
 - group: {name: generalise, enabled: true}
+- group: {name: future, enabled: true}
 # Stolen from https://github.com/NorfairKing/haskell-dangerous-functions/
 - functions:
   - {name: unsafeDupablePerformIO, within: []} # Unsafe
