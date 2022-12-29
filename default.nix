@@ -15,6 +15,7 @@ let
       discord-haskell = lib.doJailbreak (self.callHackage "discord-haskell" "1.15.3" {});
       # not released yet
       req = self.callHackage "req" "3.13.0" {};
+      http-api-data = lib.doJailbreak super.http-api-data;
       chatter = lib.dontHaddock (self.callCabal2nix "chatter" (gitignore ./.) {});
     };
   };
