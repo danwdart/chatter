@@ -1,8 +1,5 @@
 {-# LANGUAGE DataKinds         #-}
-
-
 {-# LANGUAGE NoImplicitPrelude #-}
-
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-name-shadowing #-}
 
