@@ -29,6 +29,7 @@ data Event = Event {
     eventBody :: Message
 } deriving stock (Eq, Generic, Show)
 
+-- @TODO whatever `fail` is in FromJSON
 instance FromJSON Event where
     parseJSON = \case
         (Array a) -> case V.toList a of
