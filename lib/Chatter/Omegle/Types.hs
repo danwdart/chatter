@@ -10,6 +10,7 @@ import           Data.Aeson
 import           Data.Text       (Text)
 import           Data.Vector     as V
 import           GHC.Generics
+import Control.Monad.Fail
 
 type EventType = Text
 type MessageBody = Text
@@ -44,7 +45,7 @@ instance FromJSON Event where
         _ -> fail ("Not array" :: String)
         where
             strToVal (String e) = e
-            strToVal _          = fail ("Not a string" :: String)
+            strToVal _          = error ("Not a string" :: String)
 
 data LoginResponse = LoginResponse {
     clientID :: Text,

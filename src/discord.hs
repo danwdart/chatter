@@ -81,7 +81,8 @@ runDiscordOpts token channelId = RunDiscordOpts {
     discordOnEvent = handleEvent channelId,
     discordOnLog = putStrLn,
     discordForkThreadForEvents = False,
-    discordGatewayIntent = def
+    discordGatewayIntent = def,
+    discordEnableCache = True
 }
 
 sendMessageFromInput ∷ ChannelId → DiscordHandler ()
