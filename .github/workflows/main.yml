@@ -20,6 +20,9 @@ jobs:
       uses: cachix/install-nix-action@v20
       with:
         nix_path: nixpkgs=channel:nixos-unstable
+        extra_nix_config: |
+          trusted-public-keys = ${{ vars.CACHE_TRUSTED_PUBLIC_KEYS }}
+          substituters = ${{ vars.CACHE_SUBSTITUTERS }}
     - name: Setup Cachix
       uses: cachix/cachix-action@v11
       with:
