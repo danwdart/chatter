@@ -28,11 +28,11 @@ module Chatter.Prelude (
     String()
 ) where
 
-import           Control.Monad.IO.Class
-import           Data.String
-import           Prelude                hiding (error, getLine, print, putStrLn)
-import qualified Prelude                as P (error, getLine, print, putStrLn)
-import           System.IO              hiding (getLine, print, putStrLn)
+import Control.Monad.IO.Class
+import Data.String
+import Prelude                hiding (error, getLine, print, putStrLn)
+import Prelude                qualified as P (error, getLine, print, putStrLn)
+import System.IO              hiding (getLine, print, putStrLn)
 
 toString ∷ (Show s) ⇒ s → String
 toString = read . show

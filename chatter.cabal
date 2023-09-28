@@ -15,7 +15,7 @@ extra-source-files:  CHANGELOG.md
 
 library
   default-language:    GHC2021
-  default-extensions:  DerivingStrategies, UnicodeSyntax
+  default-extensions:  DerivingStrategies, UnicodeSyntax, ImportQualifiedPost
   build-depends:       base >=4.17.0.0 && <5
                      , aeson
                      , text
@@ -28,7 +28,6 @@ library
                        -Wno-implicit-prelude
                        -Wno-missing-safe-haskell-mode
                        -Wno-missing-kind-signatures
-                       -Wno-prepositive-qualified-module
                        -Wno-missing-local-signatures
   hs-source-dirs:      lib
   exposed-modules:     Chatter.Prelude
@@ -45,10 +44,9 @@ executable chomegle
                        -Wno-implicit-prelude
                        -Wno-missing-safe-haskell-mode
                        -Wno-missing-kind-signatures
-                       -Wno-prepositive-qualified-module
                        -Wno-missing-local-signatures
   default-language:    GHC2021
-  default-extensions:  DerivingStrategies, UnicodeSyntax
+  default-extensions:  DerivingStrategies, UnicodeSyntax, ImportQualifiedPost
   build-depends:       base >=4.17.0.0 && <5
                      , aeson
                      , async
@@ -70,10 +68,9 @@ executable chiscord
                        -Wno-implicit-prelude
                        -Wno-missing-safe-haskell-mode
                        -Wno-missing-kind-signatures
-                       -Wno-prepositive-qualified-module
                        -Wno-missing-local-signatures
   default-language:    GHC2021
-  default-extensions:  DerivingStrategies, UnicodeSyntax
+  default-extensions:  DerivingStrategies, UnicodeSyntax, ImportQualifiedPost
   build-depends:       base >=4.17.0.0 && <5
                      , chatter
                      , discord-haskell

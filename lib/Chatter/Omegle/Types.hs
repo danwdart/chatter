@@ -5,12 +5,12 @@
 
 module Chatter.Omegle.Types where
 
-import           Chatter.Prelude
-import           Control.Monad.Fail
-import           Data.Aeson
-import           Data.Text          (Text)
-import           Data.Vector        as V
-import           GHC.Generics
+import Chatter.Prelude
+import Control.Monad.Fail
+import Data.Aeson
+import Data.Text          (Text)
+import Data.Vector        as V
+import GHC.Generics
 
 type EventType = Text
 type MessageBody = Text

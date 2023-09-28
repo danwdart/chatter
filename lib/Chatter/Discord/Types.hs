@@ -1,6 +1,6 @@
 module Chatter.Discord.Types where
 
-import           Data.Text (Text)
+import Data.Text (Text)
 
 type Token = Text
 type Username = Text

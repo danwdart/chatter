@@ -5,23 +5,23 @@
 
 module Main where
 
-import           Chatter.Discord.Types
-import           Chatter.Prelude
-import           Control.Exception
-import           Control.Monad
-import           Control.Monad.IO.Class
-import           Control.Monad.State
-import           Control.Monad.Trans.Except
-import           Data.Either
-import           Data.Text                  (Text)
-import qualified Data.Text                  as T
-import           Discord
-import qualified Discord.Requests           as R
-import           Discord.Types              hiding (channelId)
-import           System.Environment
-import           System.Exit
-import           System.IO.Error
-import           System.Process
+import Chatter.Discord.Types
+import Chatter.Prelude
+import Control.Exception
+import Control.Monad
+import Control.Monad.IO.Class
+import Control.Monad.State
+import Control.Monad.Trans.Except
+import Data.Either
+import Data.Text                  (Text)
+import Data.Text                  qualified as T
+import Discord
+import Discord.Requests           qualified as R
+import Discord.Types              hiding (channelId)
+import System.Environment
+import System.Exit
+import System.IO.Error
+import System.Process
 
 type MessageResult = Either RestCallErrorCode Message
 

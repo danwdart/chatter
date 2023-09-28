@@ -5,23 +5,23 @@
 
 module Main where
 
-import           Chatter.Omegle.Types
-import           Chatter.Prelude
-import           Control.Concurrent.Async
-import           Control.Exception
-import           Control.Monad
-import           Data.Aeson
-import qualified Data.ByteString.Char8      as BS
-import qualified Data.ByteString.Lazy.Char8 as LBS
-import           Data.List                  (head)
-import           Data.Text                  (Text)
-import qualified Data.Text                  as T
-import           Data.Text.Encoding
-import           Network.HTTP.Req
-import           System.Environment
-import           System.Exit
-import           System.Posix.Signals
-import           System.Random
+import Chatter.Omegle.Types
+import Chatter.Prelude
+import Control.Concurrent.Async
+import Control.Exception
+import Control.Monad
+import Data.Aeson
+import Data.ByteString.Char8      qualified as BS
+import Data.ByteString.Lazy.Char8 qualified as LBS
+import Data.List                  (head)
+import Data.Text                  (Text)
+import Data.Text                  qualified as T
+import Data.Text.Encoding
+import Network.HTTP.Req
+import System.Environment
+import System.Exit
+import System.Posix.Signals
+import System.Random
 
 (<<$>>) ∷ (Functor f1, Functor f2) ⇒  (a → b) → f1 (f2 a) → f1 (f2 b)
 (<<$>>) = (<$>) . (<$>)
