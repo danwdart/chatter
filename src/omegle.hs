@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-name-shadowing #-}
 
-module Main where
+module Main (main) where
 
 import Chatter.Omegle.Types
 import Chatter.Prelude

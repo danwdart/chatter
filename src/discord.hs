@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-type-defaults -Wno-unused-imports #-}
 
-module Main where
+module Main (main) where
 
 import Chatter.Discord.Types
 import Chatter.Prelude
