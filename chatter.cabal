@@ -32,31 +32,6 @@ library
   hs-source-dirs:      lib
   exposed-modules:     Chatter.Prelude
                      , Chatter.Discord.Types
-                     , Chatter.Omegle.Types
-
-executable chomegle
-  main-is:             omegle.hs
-  ghc-options:       -Wall -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
-                       -Weverything
-                       -Wno-unsafe -Wno-safe
-                       -Wno-missing-import-lists
-                       -Wno-missing-export-lists
-                       -Wno-implicit-prelude
-                       -Wno-missing-safe-haskell-mode
-                       -Wno-missing-kind-signatures
-                       -Wno-missing-local-signatures
-  default-language:    GHC2021
-  default-extensions:  DerivingStrategies, UnicodeSyntax, ImportQualifiedPost
-  build-depends:       base >=4.17.0.0 && <5
-                     , aeson
-                     , async
-                     , bytestring
-                     , chatter
-                     , random
-                     , req
-                     , text
-                     , unix
-  hs-source-dirs:      src
 
 executable chiscord
   main-is:             discord.hs

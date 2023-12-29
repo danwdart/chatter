@@ -11,7 +11,6 @@ Interactive by prompt or by linkage.
 
 ## Networks
 Jabber?
-Omegle
 Discord
 Slack?
 Your own SSH servers
