@@ -1,56 +1,67 @@
-cabal-version:       3.4
+cabal-version:      3.4
+
 -- Newer versions complain
-name:                chatter
-version:             0.2.0.0
-synopsis:            Chat tools
-description:         Chat tools for various networks
+name:               chatter
+version:            0.2.0.0
+synopsis:           Chat tools
+description:        Chat tools for various networks
+
 -- bug-reports:
-license:             AGPL-3.0-only
-author:              Dan Dart
-maintainer:          Dan Dart
-copyright:           Dan Dart 2019
+license:            AGPL-3.0-only
+author:             Dan Dart
+maintainer:         Dan Dart
+copyright:          Dan Dart 2019
+
 -- category:
-build-type:          Simple
-extra-source-files:  CHANGELOG.md
+build-type:         Simple
+extra-source-files: CHANGELOG.md
 
 library
-  default-language:    GHC2021
-  default-extensions:  DerivingStrategies, UnicodeSyntax, ImportQualifiedPost
-  build-depends:       base >=4.17.0.0 && <5
-                     , aeson
-                     , text
-                     , vector
-  ghc-options:       -Wall -Werror -haddock
-                       -Weverything
-                       -Wno-unsafe -Wno-safe
-                       -Wno-missing-import-lists
-                       -Wno-missing-export-lists
-                       -Wno-implicit-prelude
-                       -Wno-missing-safe-haskell-mode
-                       -Wno-missing-kind-signatures
-                       -Wno-missing-local-signatures
-  hs-source-dirs:      lib
-  exposed-modules:     Chatter.Prelude
-                     , Chatter.Discord.Types
+  default-language:   GHC2021
+  default-extensions:
+    DerivingStrategies
+    ImportQualifiedPost
+    UnicodeSyntax
+
+  build-depends:
+    , aeson
+    , base    >=4.17.0.0 && <5
+    , text
+    , vector
+
+  ghc-options:
+    -Wall -Werror -haddock -Weverything -Wno-unsafe -Wno-safe
+    -Wno-missing-import-lists -Wno-missing-export-lists
+    -Wno-implicit-prelude -Wno-missing-safe-haskell-mode
+    -Wno-missing-kind-signatures -Wno-missing-local-signatures
+
+  hs-source-dirs:     lib
+  exposed-modules:
+    Chatter.Discord.Types
+    Chatter.Prelude
 
 executable chiscord
-  main-is:             discord.hs
-  ghc-options:       -Wall -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
-                       -Weverything
-                       -Wno-unsafe -Wno-safe
-                       -Wno-missing-import-lists
-                       -Wno-missing-export-lists
-                       -Wno-implicit-prelude
-                       -Wno-missing-safe-haskell-mode
-                       -Wno-missing-kind-signatures
-                       -Wno-missing-local-signatures
-  default-language:    GHC2021
-  default-extensions:  DerivingStrategies, UnicodeSyntax, ImportQualifiedPost
-  build-depends:       base >=4.17.0.0 && <5
-                     , chatter
-                     , discord-haskell
-                     , mtl
-                     , process
-                     , text
-                     , transformers
-  hs-source-dirs:      src
+  main-is:            discord.hs
+  ghc-options:
+    -Wall -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
+    -Weverything -Wno-unsafe -Wno-safe -Wno-missing-import-lists
+    -Wno-missing-export-lists -Wno-implicit-prelude
+    -Wno-missing-safe-haskell-mode -Wno-missing-kind-signatures
+    -Wno-missing-local-signatures
+
+  default-language:   GHC2021
+  default-extensions:
+    DerivingStrategies
+    ImportQualifiedPost
+    UnicodeSyntax
+
+  build-depends:
+    , base             >=4.17.0.0 && <5
+    , chatter
+    , discord-haskell
+    , mtl
+    , process
+    , text
+    , transformers
+
+  hs-source-dirs:     src
