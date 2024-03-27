@@ -5,11 +5,13 @@ name:               chatter
 version:            0.2.0.0
 synopsis:           Chat tools
 description:        Chat tools for various networks
+
 -- bug-reports:
 license:            AGPL-3.0-only
 author:             Dan Dart
 maintainer:         Dan Dart
 copyright:          Dan Dart 2019
+
 -- category:
 build-type:         Simple
 extra-source-files: CHANGELOG.md
@@ -20,14 +22,18 @@ library
     DerivingStrategies
     ImportQualifiedPost
     UnicodeSyntax
+
   build-depends:
-    , base    >=4.17.0.0 && <5
+    , base  >=4.18.0.0 && <5
     , text
+
   ghc-options:
     -Wall -Werror -haddock -Weverything -Wno-unsafe -Wno-safe
     -Wno-missing-import-lists -Wno-missing-export-lists
     -Wno-implicit-prelude -Wno-missing-safe-haskell-mode
     -Wno-missing-kind-signatures -Wno-missing-local-signatures
+    -Wno-all-missed-specialisations
+
   hs-source-dirs:     lib
   exposed-modules:
     Chatter.Discord.Types
@@ -40,18 +46,21 @@ executable chiscord
     -Weverything -Wno-unsafe -Wno-safe -Wno-missing-import-lists
     -Wno-missing-export-lists -Wno-implicit-prelude
     -Wno-missing-safe-haskell-mode -Wno-missing-kind-signatures
-    -Wno-missing-local-signatures
+    -Wno-missing-local-signatures -Wno-all-missed-specialisations
+
   default-language:   GHC2021
   default-extensions:
     DerivingStrategies
     ImportQualifiedPost
     UnicodeSyntax
+
   build-depends:
-    , base             >=4.17.0.0 && <5
+    , base             >=4.18.0.0 && <5
     , chatter
     , discord-haskell
     , mtl
     , process
     , text
     , transformers
+
   hs-source-dirs:     src
