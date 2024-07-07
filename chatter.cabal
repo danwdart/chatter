@@ -31,9 +31,11 @@ library
     -Wall -Werror -haddock -Weverything -Wno-unsafe -Wno-safe
     -Wno-missing-import-lists -Wno-missing-export-lists
     -Wno-implicit-prelude -Wno-missing-safe-haskell-mode
-    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures -Wno-missing-local-signatures
-    -Wno-all-missed-specialisations
-    -Wno-missing-role-annotations -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures -Wno-unrecognised-warning-flags
+    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures
+    -Wno-missing-local-signatures -Wno-all-missed-specialisations
+    -Wno-missed-specialisations -Wno-missing-role-annotations
+    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures
+    -Wno-unrecognised-warning-flags
 
   hs-source-dirs:     lib
   exposed-modules:
@@ -46,8 +48,9 @@ executable chiscord
     -Wall -Werror -haddock -threaded -rtsopts -with-rtsopts=-N
     -Weverything -Wno-unsafe -Wno-safe -Wno-missing-import-lists
     -Wno-missing-export-lists -Wno-implicit-prelude
-    -Wno-missing-safe-haskell-mode -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures
-    -Wno-missing-local-signatures -Wno-all-missed-specialisations
+    -Wno-missing-safe-haskell-mode -Wno-missing-kind-signatures
+    -Wno-missing-poly-kind-signatures -Wno-missing-local-signatures
+    -Wno-all-missed-specialisations -Wno-missed-specialisations
     -Wno-missing-role-annotations -Wno-unrecognised-warning-flags
 
   default-language:   GHC2021
