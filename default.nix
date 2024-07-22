@@ -25,8 +25,7 @@ let
     ]);
     # withHoogle = false;
   };
-  exe = lib.justStaticExecutables (myHaskellPackages.chatter);
-in
+  in
 {
   inherit shell;
   chatter = lib.justStaticExecutables (myHaskellPackages.chatter);
