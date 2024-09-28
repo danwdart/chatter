@@ -1,0 +1,3 @@
+packages: chatter.cabal
+
+allow-newer: base, websockets

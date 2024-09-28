@@ -4,7 +4,7 @@
     nixpkgs = nixpkgs;
     compiler = compiler;
   },
-  compiler ? "ghc98"
+  compiler ? "ghc910"
 }:
 let
   gitignore = nixpkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ];
@@ -13,6 +13,8 @@ let
   myHaskellPackages = nixpkgs.pkgs.haskell.packages.${compiler}.override {
     overrides = self: super: rec {
       chatter = lib.dontHaddock (self.callCabal2nix "chatter" (gitignore ./.) {});
+      websockets = lib.doJailbreak super.websockets;
+      discord-haskell = lib.doJailbreak super.discord-haskell;
     };
   };
   shell = myHaskellPackages.shellFor {

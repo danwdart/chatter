@@ -24,7 +24,7 @@ library
     UnicodeSyntax
 
   build-depends:
-    , base  >=4.19.1.0 && <5
+    , base  >=4.20.0.0 && <5
     , text
 
   ghc-options:
@@ -60,9 +60,9 @@ executable chiscord
     UnicodeSyntax
 
   build-depends:
-    , base             >=4.19.1.0 && <5
+    , base             >=4.20.0.0 && <5
     , chatter
-    , discord-haskell
+    , discord-haskell >= 1.17.0
     , mtl
     , process
     , text
