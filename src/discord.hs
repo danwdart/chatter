@@ -1,5 +1,4 @@
 {-# LANGUAGE LambdaCase        #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-type-defaults -Wno-unused-imports #-}
 
@@ -30,7 +29,7 @@ type MessageResult = Either RestCallErrorCode Message
 
 handleStart ∷ ChannelId → DiscordHandler ()
 handleStart channelId = do
-    putStrLn "Start handler called"
+    putStrLnGeneric "Start handler called"
     -- Right user <- restCall h R.GetCurrentUser
     -- channel <- restCall h (R.GetChannel channelId)
     void $ sendMessage channelId "Bot Started"
@@ -38,17 +37,17 @@ handleStart channelId = do
 
 sendMessage ∷ ChannelId → MessageText → DiscordHandler MessageResult
 sendMessage channelId msg = do
-    putStrLn $ "Sending a message to channel " <> show channelId
+    putStrLnGeneric $ "Sending a message to channel " <> show channelId
     restCall . R.CreateMessage channelId $ msg
 
 handleMessage ∷ ChannelId → Username → MessageText → DiscordHandler ()
 handleMessage channelId username = \case
     "/quit" -> do
         _ <- sendMsg "Quitting Discord Bot"
-        putStrLn "Received quit message"
+        putStrLnGeneric "Received quit message"
         stopDiscord
         liftIO exitSuccess
-    msg -> putStrLn $ username <> ": " <> msg
+    msg -> putStrLnGeneric $ username <> ": " <> msg
     where
         sendMsg = sendMessage channelId
 
@@ -60,15 +59,15 @@ handleEvent channelId = \case
         let msg = messageContent m
         let username = userName author
         handleMessage channelId username msg
-    Ready {} -> putStrLn "Received Ready event."
-    GuildCreate {} -> putStrLn "Received GuildCreate event."
-    ChannelCreate ChannelDirectMessage {} -> putStrLn "Received ChannelCreate - direct message event."
-    TypingStart _ -> putStrLn "A user is typing."
-    PresenceUpdate _ -> putStrLn "Received Presence update event."
-    MessageReactionAdd _ -> putStrLn "Received a reaction event."
+    Ready {} -> putStrLnGeneric "Received Ready event."
+    GuildCreate {} -> putStrLnGeneric "Received GuildCreate event."
+    ChannelCreate ChannelDirectMessage {} -> putStrLnGeneric "Received ChannelCreate - direct message event."
+    TypingStart _ -> putStrLnGeneric "A user is typing."
+    PresenceUpdate _ -> putStrLnGeneric "Received Presence update event."
+    MessageReactionAdd _ -> putStrLnGeneric "Received a reaction event."
     m -> do
-        putStrLn "Event detected. Not handled."
-        print m
+        putStrLnGeneric "Event detected. Not handled."
+        printGeneric m
 
 handleQuit ∷ IO ()
 handleQuit = putStrLn "Quit handler called"
@@ -79,7 +78,7 @@ runDiscordOpts token channelId = RunDiscordOpts {
     discordOnStart = handleStart channelId,
     discordOnEnd = handleQuit,
     discordOnEvent = handleEvent channelId,
-    discordOnLog = putStrLn,
+    discordOnLog = putStrLnGeneric,
     discordForkThreadForEvents = False,
     discordGatewayIntent = def,
     discordEnableCache = True
@@ -97,10 +96,10 @@ sendMessageFromInput channelId = do
 
 main ∷ IO ()
 main = void . runExceptT $ do
-    putStrLn "Chiscord v0.1"
-    putStrLn "Loading auth token"
+    putStrLnGeneric "Chiscord v0.1"
+    putStrLnGeneric "Loading auth token"
     token <- catchE (ExceptT $ tryJust (guard . isDoesNotExistError) (getEnv "DISCORD_AUTH_TOKEN")) . const $ fail "Failed to get the authentication token. Please set the environment variable DISCORD_AUTH_TOKEN to your token & make sure you include DISCORD_CHANNEL_ID. See https://github.com/aquarial/discord-haskell/wiki/Creating-your-first-Bot for more details."
     channelId <- catchE (ExceptT $ tryJust (guard . isDoesNotExistError) (getEnv "DISCORD_CHANNEL_ID")) . const $ fail "Failed to get the channel ID. Please set the environment variable DISCORD_CHANNEL_ID."
-    putStrLn "Starting bot"
+    putStrLnGeneric "Starting bot"
     void . liftIO . runDiscord . runDiscordOpts (T.pack token) $ read channelId
-    putStrLn "Bot stopped"
+    putStrLnGeneric "Bot stopped"
