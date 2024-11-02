@@ -18,9 +18,7 @@ extra-source-files: CHANGELOG.md
 
 library
   default-language:   GHC2024
-  default-extensions:
-    UnicodeSyntax
-
+  default-extensions: UnicodeSyntax
   build-depends:
     , base  >=4.20.0.0 && <5
     , text
@@ -52,13 +50,11 @@ executable chiscord
     -Wno-missing-role-annotations -Wno-unrecognised-warning-flags
 
   default-language:   GHC2024
-  default-extensions:
-    UnicodeSyntax
-
+  default-extensions: UnicodeSyntax
   build-depends:
     , base             >=4.20.0.0 && <5
     , chatter
-    , discord-haskell >= 1.17.0
+    , discord-haskell  >=1.17.0
     , mtl
     , process
     , text
