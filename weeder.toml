@@ -1,2 +1,2 @@
-roots = [ "Main.main", "^Paths_weeder\\..*" ]
+roots = [ "^Main.main$" ]
 type-class-roots = true
