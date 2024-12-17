@@ -15,11 +15,11 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            exeName: chatter-linux-x86_64
+            exeName: chiscord-linux-x86_64
           - os: macOS-latest
-            exeName: chatter-darwin-aarch64
+            exeName: chiscord-darwin-aarch64
           - os: windows-latest
-            exeName: chatter-windows-x86_64.exe
+            exeName: chiscord-windows-x86_64.exe
         
     steps:
     - uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
       run: cabal test all
     - name: Get executable path
       id: get-path
-      run: echo "path=$(cabal list-bin chatter)" >> $GITHUB_OUTPUT
+      run: echo "path=$(cabal list-bin chiscord)" >> $GITHUB_OUTPUT
       shell: bash
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
