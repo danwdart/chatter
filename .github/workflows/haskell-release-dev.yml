@@ -17,8 +17,9 @@ jobs:
         include:
           - os: ubuntu-latest
             exeName: chiscord-dev-linux-x86_64
-          - os: macOS-latest
-            exeName: chiscord-dev-darwin-aarch64
+          # macos doesn't like non-Main.hs???
+          # - os: macOS-latest
+          #   exeName: chiscord-dev-darwin-aarch64
           - os: windows-latest
             exeName: chiscord-dev-windows-x86_64.exe
         
