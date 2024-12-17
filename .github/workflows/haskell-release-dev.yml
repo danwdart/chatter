@@ -1,4 +1,4 @@
-name: Haskell Release Main
+name: Haskell Release Dev
 on:
   push:
     branches: [ "main" ]
@@ -16,11 +16,11 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            exeName: chatter-linux-x86_64
+            exeName: chatter-dev-linux-x86_64
           - os: macOS-latest
-            exeName: chatter-darwin-aarch64
+            exeName: chatter-dev-darwin-aarch64
           - os: windows-latest
-            exeName: chatter-windows-x86_64.exe
+            exeName: chatter-dev-windows-x86_64.exe
         
     steps:
     - uses: actions/checkout@v4
