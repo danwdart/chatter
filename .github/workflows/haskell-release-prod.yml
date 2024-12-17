@@ -16,11 +16,11 @@ jobs:
         include:
           - os: ubuntu-latest
             exeName: chiscord-linux-x86_64
-          # macos doesn't like non-Main.hs???
+          # macos and windows doesn't like non-Main.hs???
           # - os: macOS-latest
           #   exeName: chiscord-darwin-aarch64
-          - os: windows-latest
-            exeName: chiscord-windows-x86_64.exe
+          # - os: windows-latest
+          #   exeName: chiscord-windows-x86_64.exe
         
     steps:
     - uses: actions/checkout@v4
