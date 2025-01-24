@@ -4,15 +4,15 @@
 module Main (main) where
 
 import Chatter.Discord.Types
-import Chatter.Prelude
 import Control.Exception
 import Control.Monad
 import Control.Monad.IO.Class
 import Control.Monad.State
-import Control.Monad.Trans.Except
+import Control.Monad.Except
 import Data.Either
 import Data.Text                  (Text)
 import Data.Text                  qualified as T
+import Data.Text.IO               qualified as TIO
 import Discord
 import Discord.Requests           qualified as R
 import Discord.Types              hiding (channelId)
@@ -28,7 +28,7 @@ type MessageResult = Either RestCallErrorCode Message
 
 handleStart ∷ ChannelId → DiscordHandler ()
 handleStart channelId = do
-    putStrLnGeneric ("Start handler called" :: Text)
+    liftIO . TIO.putStrLn $ "Start handler called"
     -- Right user <- restCall h R.GetCurrentUser
     -- channel <- restCall h (R.GetChannel channelId)
     void $ sendMessage channelId "Bot Started"
@@ -36,17 +36,17 @@ handleStart channelId = do
 
 sendMessage ∷ ChannelId → MessageText → DiscordHandler MessageResult
 sendMessage channelId msg = do
-    putStrLnGeneric $ "Sending a message to channel " <> show channelId
+    liftIO . TIO.putStrLn $ "Sending a message to channel " <> T.show channelId
     restCall . R.CreateMessage channelId $ msg
 
 handleMessage ∷ ChannelId → Username → MessageText → DiscordHandler ()
 handleMessage channelId username = \case
     "/quit" -> do
         void . sendMsg $ "Quitting Discord Bot"
-        putStrLnGeneric ("Received quit message" :: Text)
+        liftIO . TIO.putStrLn $ "Received quit message"
         stopDiscord
         liftIO exitSuccess
-    msg -> putStrLnGeneric $ username <> ": " <> msg
+    msg -> liftIO . TIO.putStrLn $ username <> ": " <> msg
     where
         sendMsg = sendMessage channelId
 
@@ -58,15 +58,15 @@ handleEvent channelId = \case
         let msg = messageContent m
         let username = userName author
         handleMessage channelId username msg
-    Ready {} -> putStrLnGeneric ("Received Ready event." :: Text)
-    GuildCreate {} -> putStrLnGeneric ("Received GuildCreate event." :: Text)
-    ChannelCreate ChannelDirectMessage {} -> putStrLnGeneric ("Received ChannelCreate - direct message event." :: Text)
-    TypingStart _ -> putStrLnGeneric ("A user is typing." :: Text)
-    PresenceUpdate _ -> putStrLnGeneric ("Received Presence update event." :: Text)
-    MessageReactionAdd _ -> putStrLnGeneric ("Received a reaction event." :: Text)
+    Ready {} -> liftIO . TIO.putStrLn $ "Received Ready event."
+    GuildCreate {} -> liftIO . TIO.putStrLn $ "Received GuildCreate event."
+    ChannelCreate ChannelDirectMessage {} -> liftIO . TIO.putStrLn $ "Received ChannelCreate - direct message event."
+    TypingStart _ -> liftIO . TIO.putStrLn $ "A user is typing."
+    PresenceUpdate _ -> liftIO . TIO.putStrLn $ "Received Presence update event."
+    MessageReactionAdd _ -> liftIO . TIO.putStrLn $ "Received a reaction event."
     m -> do
-        putStrLnGeneric ("Event detected. Not handled." :: Text)
-        printGeneric m
+        liftIO . TIO.putStrLn $ "Event detected. Not handled."
+        liftIO . TIO.putStrLn . T.show $ m
 
 handleQuit ∷ IO ()
 handleQuit = putStrLn "Quit handler called"
@@ -77,7 +77,7 @@ runDiscordOpts token channelId = RunDiscordOpts {
     discordOnStart = handleStart channelId,
     discordOnEnd = handleQuit,
     discordOnEvent = handleEvent channelId,
-    discordOnLog = putStrLnGeneric,
+    discordOnLog = liftIO . TIO.putStrLn,
     discordForkThreadForEvents = False,
     discordGatewayIntent = def,
     discordEnableCache = True
@@ -95,10 +95,10 @@ sendMessageFromInput channelId = do
 
 main ∷ IO ()
 main = void . runExceptT $ do
-    putStrLnGeneric ("Chiscord v0.1" :: Text)
-    putStrLnGeneric ("Loading auth token" :: Text)
-    token <- catchE (ExceptT $ tryJust (guard . isDoesNotExistError) (getEnv "DISCORD_AUTH_TOKEN")) . const $ fail "Failed to get the authentication token. Please set the environment variable DISCORD_AUTH_TOKEN to your token & make sure you include DISCORD_CHANNEL_ID. See https://github.com/aquarial/discord-haskell/wiki/Creating-your-first-Bot for more details."
-    channelId <- catchE (ExceptT $ tryJust (guard . isDoesNotExistError) (getEnv "DISCORD_CHANNEL_ID")) . const $ fail "Failed to get the channel ID. Please set the environment variable DISCORD_CHANNEL_ID."
-    putStrLnGeneric ("Starting bot" :: Text)
+    liftIO . TIO.putStrLn $ "Chiscord v0.1"
+    liftIO . TIO.putStrLn $ "Loading auth token"
+    token <- catchError (ExceptT $ tryJust (guard . isDoesNotExistError) (getEnv "DISCORD_AUTH_TOKEN")) . const $ fail "Failed to get the authentication token. Please set the environment variable DISCORD_AUTH_TOKEN to your token & make sure you include DISCORD_CHANNEL_ID. See https://github.com/aquarial/discord-haskell/wiki/Creating-your-first-Bot for more details."
+    channelId <- catchError (ExceptT $ tryJust (guard . isDoesNotExistError) (getEnv "DISCORD_CHANNEL_ID")) . const $ fail "Failed to get the channel ID. Please set the environment variable DISCORD_CHANNEL_ID."
+    liftIO . TIO.putStrLn $ "Starting bot"
     void . liftIO . runDiscord . runDiscordOpts (T.pack token) $ read channelId
-    putStrLnGeneric ("Bot stopped" :: Text)
+    liftIO . TIO.putStrLn $ "Bot stopped"
