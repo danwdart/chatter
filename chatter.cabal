@@ -20,8 +20,8 @@ library
   default-language:   GHC2024
   default-extensions: UnicodeSyntax
   build-depends:
-    , base  >=4.20.0.0 && <5
-    , text  >=2.1.2
+    , base  ^>=4.20.0.0
+    , text  ^>=2.1.2
 
   ghc-options:
     -Wall -Werror -haddock -Weverything -Wno-unsafe -Wno-safe
@@ -34,8 +34,7 @@ library
     -Wno-unrecognised-warning-flags
 
   hs-source-dirs:     lib
-  exposed-modules:
-    Chatter.Discord.Types
+  exposed-modules:    Chatter.Discord.Types
 
 executable chiscord
   main-is:            discord.hs
@@ -51,11 +50,11 @@ executable chiscord
   default-language:   GHC2024
   default-extensions: UnicodeSyntax
   build-depends:
-    , base             >=4.20.0.0 && <5
-    , chatter
-    , discord-haskell  >=1.17.0
-    , mtl
-    , process
-    , text             >=2.1.2
+    , base             ^>=4.20.0.0
+    , chatter          ^>=0.2.0.0
+    , discord-haskell  ^>=1.17.0
+    , mtl              ^>=2.3.1
+    , process          ^>=1.6.25.0
+    , text             ^>=2.1.2
 
   hs-source-dirs:     src
