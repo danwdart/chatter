@@ -4,7 +4,7 @@
     nixpkgs = nixpkgs;
     compiler = compiler;
   },
-  compiler ? "ghc910"
+  compiler ? "ghc912"
 }:
 let
   gitignore = nixpkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ];
@@ -12,14 +12,14 @@ let
   lib = nixpkgs.pkgs.haskell.lib;
   myHaskellPackages = nixpkgs.pkgs.haskell.packages.${compiler}.override {
     overrides = self: super: rec {
-      chatter = lib.dontHaddock (self.callCabal2nix "chatter" (gitignore ./.) {});
+      chatio = lib.dontHaddock (self.callCabal2nix "chatio" (gitignore ./.) {});
       websockets = lib.doJailbreak super.websockets;
       discord-haskell = lib.doJailbreak super.discord-haskell;
     };
   };
   shell = myHaskellPackages.shellFor {
     packages = p: [
-      p.chatter
+      p.chatio
     ];
     shellHook = ''
       gen-hie > hie.yaml
@@ -34,5 +34,5 @@ let
   in
 {
   inherit shell;
-  chatter = lib.justStaticExecutables (myHaskellPackages.chatter);
+  chatio = lib.justStaticExecutables (myHaskellPackages.chatio);
 }

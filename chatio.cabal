@@ -1,7 +1,7 @@
-cabal-version:      3.4
+cabal-version:      3.12
 
 -- Newer versions complain
-name:               chatter
+name:               chatio
 version:            0.2.0.0
 synopsis:           Chat tools
 description:        Chat tools for various networks
@@ -20,7 +20,7 @@ library
   default-language:   GHC2024
   default-extensions: UnicodeSyntax
   build-depends:
-    , base  ^>=4.20.0.0
+    , base  ^>=4.21.0.0
     , text  ^>=2.1.2
 
   ghc-options:
@@ -50,8 +50,8 @@ executable chiscord
   default-language:   GHC2024
   default-extensions: UnicodeSyntax
   build-depends:
-    , base             ^>=4.20.0.0
-    , chatter          ^>=0.2.0.0
+    , base             ^>=4.21.0.0
+    , chatio          ^>=0.2.0.0
     , discord-haskell  ^>=1.17.0
     , mtl              ^>=2.3.1
     , process          ^>=1.6.25.0
