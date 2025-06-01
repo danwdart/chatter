@@ -4,12 +4,15 @@ mkShell rec {
     packages = [
         haskell.compiler.ghc912
         cabal-install
+        krank
         pkg-config
         zlib.dev
+        pcre.dev
     ];
-    # maybe we can include the copy to store stuff in here? as mkShell is a custom stdenv.mkDerivation
-    # shellHook = ''
-    #     export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath buildInputs}:$LD_LIBRARY_PATH"
-    #     export LD_LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib.outPath}/lib:$LD_LIBRARY_PATH"
-    # '';
+    shellHook = ''
+        [[ -f ~/.local/bin/refactor ]] || cabal install apply-refact cabal-fmt doctest ghci-dap ghcid ghcide haskell-debug-adapter haskell-language-server hasktags hlint hoogle hpack implicit-hie stan stylish-haskell weeder --overwrite-policy=always --allow-newer
+        export PATH=~/.local/bin:$PATH
+        gen-hie > hie.yaml
+        for i in $(find -type f | grep -v dist-newstyle); do krank $i; done
+    '';
 }
