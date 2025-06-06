@@ -58,6 +58,6 @@ jobs:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file: ${{ steps.get-path.outputs.path }}
         asset_name: ${{ matrix.exeName }}
-        tag: ${{ github.ref }}
+        tag: nightly
         overwrite: true
         prerelease: true
