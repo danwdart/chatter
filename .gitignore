@@ -1,6 +1,5 @@
 .stack-work
-dist
-dist-newstyle
+dist*
 .ghc.*
 google.json
 *.hi
