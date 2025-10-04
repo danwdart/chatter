@@ -12,7 +12,7 @@ do
         exit 0
     fi
     history -s "$INPUT"
-    echo $INPUT
+    echo "$INPUT"
 
     echo -n "> "
 done

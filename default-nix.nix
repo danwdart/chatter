@@ -1,15 +1,15 @@
 {
   nixpkgs ? import <nixpkgs> {},
   haskell-tools ? import (builtins.fetchTarball "https://github.com/danwdart/haskell-tools/archive/master.tar.gz") {
-    nixpkgs = nixpkgs;
-    compiler = compiler;
+    inherit nixpkgs;
+    inherit compiler;
   },
   compiler ? "ghc912"
 }:
 let
   gitignore = nixpkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ];
   tools = haskell-tools compiler;
-  lib = nixpkgs.pkgs.haskell.lib;
+  inherit (nixpkgs.pkgs.haskell) lib;
   myHaskellPackages = nixpkgs.pkgs.haskell.packages.${compiler}.override {
     overrides = self: super: rec {
       chatio = lib.dontHaddock (self.callCabal2nix "chatio" (gitignore ./.) {});
@@ -23,7 +23,7 @@ let
     ];
     shellHook = ''
       gen-hie > hie.yaml
-      for i in $(find -type f | grep -v "dist-*"); do krank $i; done
+      for i in $(find . -type f | grep -v "dist-*"); do krank $i; done
     '';
     buildInputs = tools.defaultBuildTools ++ (with nixpkgs; [
       expect
@@ -34,5 +34,5 @@ let
   in
 {
   inherit shell;
-  chatio = lib.justStaticExecutables (myHaskellPackages.chatio);
+  chatio = lib.justStaticExecutables myHaskellPackages.chatio;
 }

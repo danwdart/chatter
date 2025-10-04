@@ -20,7 +20,7 @@ library
   default-language:   GHC2024
   default-extensions: UnicodeSyntax
   build-depends:
-    , base  ^>=4.21.0.0
+    , base  >=4.21.0.0 && <4.23.0.0
     , text  ^>=2.1.2
 
   ghc-options:
@@ -38,23 +38,25 @@ library
 
 executable chiscord
   main-is:            discord.hs
+
   if !arch(wasm32)
     ghc-options: -threaded -rtsopts -with-rtsopts=-N
+
   ghc-options:
-    -Wall -Werror -haddock
-    -Weverything -Wno-unsafe -Wno-safe -Wno-missing-import-lists
-    -Wno-missing-export-lists -Wno-implicit-prelude
-    -Wno-missing-safe-haskell-mode -Wno-missing-kind-signatures
-    -Wno-missing-poly-kind-signatures -Wno-missing-local-signatures
-    -Wno-all-missed-specialisations -Wno-missed-specialisations
-    -Wno-missing-role-annotations -Wno-unrecognised-warning-flags
+    -Wall -Werror -haddock -Weverything -Wno-unsafe -Wno-safe
+    -Wno-missing-import-lists -Wno-missing-export-lists
+    -Wno-implicit-prelude -Wno-missing-safe-haskell-mode
+    -Wno-missing-kind-signatures -Wno-missing-poly-kind-signatures
+    -Wno-missing-local-signatures -Wno-all-missed-specialisations
+    -Wno-missed-specialisations -Wno-missing-role-annotations
+    -Wno-unrecognised-warning-flags
 
   default-language:   GHC2024
   default-extensions: UnicodeSyntax
   build-depends:
-    , base             ^>=4.21.0.0
-    , chatio          ^>=0.2.0.0
-    , discord-haskell  ^>=1.17.0
+    , base             >=4.21.0.0 && <4.23.0.0
+    , chatio           ^>=0.2.0.0
+    , discord-haskell  ^>=1.18.0
     , mtl              ^>=2.3.1
     , process          ^>=1.6.25.0
     , text             ^>=2.1.2

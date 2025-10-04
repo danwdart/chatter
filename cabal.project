@@ -1,5 +1,1 @@
 packages: chatio.cabal
-
--- -- allow-newer: base, websockets
--- base & data-default for discord-haskell
-allow-newer: base, data-default
