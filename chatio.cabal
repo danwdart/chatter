@@ -20,7 +20,7 @@ library
   default-language:   GHC2024
   default-extensions: UnicodeSyntax
   build-depends:
-    , base  >=4.21 && <4.23
+    , base  ^>=4.22
     , text  ^>=2.1.2
 
   ghc-options:
@@ -54,7 +54,7 @@ executable chiscord
   default-language:   GHC2024
   default-extensions: UnicodeSyntax
   build-depends:
-    , base             >=4.21 && <4.23
+    , base             ^>=4.22
     , chatio           ^>=0.2
     , discord-haskell  ^>=1.18
     , mtl              ^>=2.3.1

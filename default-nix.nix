@@ -4,7 +4,7 @@
     inherit nixpkgs;
     inherit compiler;
   },
-  compiler ? "ghc912"
+  compiler ? "ghc914"
 }:
 let
   gitignore = nixpkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ];

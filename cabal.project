@@ -1,1 +1,2 @@
 packages: chatio.cabal
+allow-newer: base, ghc-bignum, template-haskell
