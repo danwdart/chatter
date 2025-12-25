@@ -1,4 +1,4 @@
-with import (builtins.fetchTarball "https://github.com/guibou/nixpkgs/archive/ghc-914.zip") {};
+with import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/master.zip") {};
 # needs mkShell in order to use headers/etc. from deps! how do we do that from nix-shell 
 mkShell rec {
     packages = [
