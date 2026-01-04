@@ -1,4 +1,4 @@
-cabal-version:      3.12
+cabal-version:      3.14
 
 -- Newer versions complain
 name:               chatio
@@ -14,7 +14,7 @@ copyright:          Dan Dart 2019
 
 -- category:
 build-type:         Simple
-extra-source-files: CHANGELOG.md
+extra-doc-files:    CHANGELOG.md
 
 library
   default-language:   GHC2024
