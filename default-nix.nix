@@ -1,6 +1,6 @@
 {
   nixpkgs ? import <nixpkgs> {},
-  haskell-tools ? import (builtins.fetchTarball "https://github.com/danwdart/haskell-tools/archive/master.tar.gz") {
+  haskell-tools ? import (builtins.fetchTarball "https://github.com/emberdart/haskell-tools/archive/master.tar.gz") {
     inherit nixpkgs;
     inherit compiler;
   },

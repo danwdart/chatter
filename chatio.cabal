@@ -8,9 +8,9 @@ description:        Chat tools for various networks
 
 -- bug-reports:
 license:            AGPL-3.0-only
-author:             Dan Dart
-maintainer:         Dan Dart
-copyright:          Dan Dart 2019
+author:             Ember Dart
+maintainer:         Ember Dart
+copyright:          Ember Dart 2019
 
 -- category:
 build-type:         Simple
