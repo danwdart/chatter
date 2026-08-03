@@ -20,32 +20,27 @@ jobs:
           #   exeName: chiscord-nightly-darwin-aarch64
           # - os: windows-latest
           #   exeName: chiscord-nightly-windows-x86_64.exe
-        
+    env:
+      CONFIG: "--enable-tests --enable-benchmarks"
     steps:
     - uses: actions/checkout@v4
     - uses: haskell-actions/setup@v2
       with:
         ghc-version: '9.14.1'
         cabal-version: '3.16.1.0'
-
+    - run: cabal update
+    - run: cabal v2-freeze $CONFIG
     - name: Cache
       uses: actions/cache@v3
-      env:
-        cache-name: cache-cabal
       with:
-        path: ~/.cabal
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
+        path: |
+          ${{ steps.setup-haskell-cabal.outputs.cabal-store }}
+          dist-newstyle
+        key: ${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
         restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
-
-    - name: Install dependencies
-      run: |
-        cabal update
-        cabal build --only-dependencies --enable-tests --enable-benchmarks
+          ${{ runner.os }}-${{ matrix.ghc }}-
     - name: Build
-      run: cabal new-build --enable-tests --enable-benchmarks all
+      run: cabal new-build $CONFIG all
     - name: Run tests
       run: cabal test all
     - name: Get executable path
