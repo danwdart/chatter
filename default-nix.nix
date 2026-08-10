@@ -14,7 +14,6 @@ let
     overrides = self: super: rec {
       chatio = lib.dontHaddock (self.callCabal2nix "chatio" (gitignore ./.) {});
       websockets = lib.doJailbreak super.websockets;
-      discord-haskell = lib.doJailbreak super.discord-haskell;
     };
   };
   shell = myHaskellPackages.shellFor {
